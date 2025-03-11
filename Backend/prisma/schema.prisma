@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model BillboardTraffic {
+  id             Int      @id @default(autoincrement()) 
+  timestamp      DateTime @default(now())             
+  car_down       Int  
+  car_up         Int  
+  bike_down      Int  
+  bike_up        Int  
+  van_down     Int  
+  van_up       Int  
+  billboard_name String
+
+  streamingLinks StreamingLink[] // Relasi ke StreamingLink
+
+  @@map("billboard_traffic") 
+}
+
+model StreamingLink {
+  id          Int      @id @default(autoincrement()) 
+  link        String   @unique // Link unik untuk streaming
+  created_at  DateTime @default(now()) // Waktu link dibuat
+  expired_at  DateTime // Waktu kadaluarsa link
+  billboard_id Int     // Relasi ke BillboardTraffic
+  billboard   BillboardTraffic @relation(fields: [billboard_id], references: [id]) // Relasi
+
+  @@map("streaming_links") 
+}
