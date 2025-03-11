@@ -5,22 +5,26 @@ const MQTT_BROKER_URL = "ws://103.245.38.40:9001/mqtt";
 const TOPIC = "vehicle/interactions";
 
 interface TrafficData {
-  going_down: number;
-  going_up: number;
-  bike_down: number;
-  bike_up: number;
+  car_down: number;
+  car_up: number;
+  motorcycle_down: number;
+  motorcycle_up: number;
   truck_down: number;
   truck_up: number;
+  bus_down: number;
+  bus_up: number;
 }
 
 const useMQTT = () => {
   const [trafficData, setTrafficData] = useState<TrafficData>({
-    going_down: 0,
-    going_up: 0,
-    bike_down: 0,
-    bike_up: 0,
+    car_down: 0,
+    car_up: 0,
+    motorcycle_down: 0,
+    motorcycle_up: 0,
     truck_down: 0,
     truck_up: 0,
+    bus_down: 0,
+    bus_up: 0,
   });
 
   useEffect(() => {

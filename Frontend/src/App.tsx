@@ -18,6 +18,7 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
+import StreamingPage from "./pages/UiElements/Stream";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
         <ScrollToTop />
         <Routes>
           <Route index path="/" element={<SignIn />} />
+          <Route path="/stream/:linkId" element={<StreamingPage />} />
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/dashboard" element={<Home />} />

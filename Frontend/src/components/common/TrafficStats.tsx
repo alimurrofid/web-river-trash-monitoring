@@ -1,16 +1,18 @@
 import useMQTT from "../../hooks/useMqtt";
 
 const TrafficStats: React.FC = () => {
-  const { going_down, going_up, bike_down, bike_up, truck_down, truck_up } =
+  const { car_down, car_up, motorcycle_down, motorcycle_up, truck_down, truck_up, bus_down, bus_up } =
     useMQTT();
 
   const stats = [
-    { label: "Car Down", value: going_down, color: "bg-blue-500" },
-    { label: "Car Up", value: going_up, color: "bg-green-500" },
-    { label: "Bike Down", value: bike_down, color: "bg-yellow-500" },
-    { label: "Bike Up", value: bike_up, color: "bg-purple-500" },
+    { label: "Car Down", value: car_down, color: "bg-blue-500" },
+    { label: "Car Up", value: car_up, color: "bg-green-500" },
+    { label: "motorcycle Down", value: motorcycle_down, color: "bg-yellow-500" },
+    { label: "motorcycle Up", value: motorcycle_up, color: "bg-purple-500" },
     { label: "Truck Down", value: truck_down, color: "bg-red-500" },
     { label: "Truck Up", value: truck_up, color: "bg-indigo-500" },
+    { label: "Bus Down", value: bus_down, color: "bg-pink-500" },
+    { label: "Bus Up", value: bus_up, color: "bg-gray-500" },
   ];
 
   return (
