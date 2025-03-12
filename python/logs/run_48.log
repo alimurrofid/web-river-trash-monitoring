@@ -1,0 +1,56 @@
+2024-09-15 21:06:38,811 - __main__ - INFO - Device: cpu
+2024-09-15 21:06:38,841 - __main__ - INFO - Connected to MQTT broker at 103.245.38.40:1883
+2024-09-15 21:06:38,844 - __main__ - INFO - Starting main function.
+2024-09-15 21:06:38,918 - __main__ - INFO - Loading model from ./yolov3-tinyu.pt
+2024-09-15 21:06:39,035 - __main__ - INFO - Labels loaded: ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat']
+2024-09-15 21:06:39,058 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 21:06:51,438 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 21:06:51,446 - __main__ - DEBUG - Marked object 1 at (423, 321)
+2024-09-15 21:06:51,449 - __main__ - DEBUG - Marked object 1 at (423, 321)
+2024-09-15 21:06:51,460 - __main__ - DEBUG - Marked object 2 at (438, 283)
+2024-09-15 21:06:51,462 - __main__ - DEBUG - Marked object 2 at (438, 283)
+2024-09-15 21:06:51,463 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 21:06:51,465 - __main__ - INFO - Published data to MQTT: {'going_down': 2, 'going_up': 2}
+2024-09-15 21:06:51,466 - __main__ - DEBUG - Counters drawn: Going Down=2, Going Up=2
+2024-09-15 21:06:51,467 - __main__ - DEBUG - FPS drawn: 0.08
+2024-09-15 21:06:51,610 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 21:06:52,736 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 21:06:52,737 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 21:06:52,739 - __main__ - INFO - Published data to MQTT: {'going_down': 2, 'going_up': 2}
+2024-09-15 21:06:52,739 - __main__ - DEBUG - Counters drawn: Going Down=2, Going Up=2
+2024-09-15 21:06:52,740 - __main__ - DEBUG - FPS drawn: 0.14
+2024-09-15 21:06:52,793 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 21:06:53,543 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 21:06:53,544 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 21:06:53,545 - __main__ - INFO - Published data to MQTT: {'going_down': 2, 'going_up': 2}
+2024-09-15 21:06:53,546 - __main__ - DEBUG - Counters drawn: Going Down=2, Going Up=2
+2024-09-15 21:06:53,547 - __main__ - DEBUG - FPS drawn: 0.21
+2024-09-15 21:06:53,596 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 21:06:54,387 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 21:06:54,402 - __main__ - DEBUG - Marked object 5 at (411, 307)
+2024-09-15 21:06:54,405 - __main__ - DEBUG - Marked object 5 at (411, 307)
+2024-09-15 21:06:54,406 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 21:06:54,407 - __main__ - INFO - Published data to MQTT: {'going_down': 3, 'going_up': 3}
+2024-09-15 21:06:54,408 - __main__ - DEBUG - Counters drawn: Going Down=3, Going Up=3
+2024-09-15 21:06:54,409 - __main__ - DEBUG - FPS drawn: 0.26
+2024-09-15 21:06:54,418 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 21:06:55,204 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 21:06:55,205 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 21:06:55,207 - __main__ - INFO - Published data to MQTT: {'going_down': 3, 'going_up': 3}
+2024-09-15 21:06:55,208 - __main__ - DEBUG - Counters drawn: Going Down=3, Going Up=3
+2024-09-15 21:06:55,209 - __main__ - DEBUG - FPS drawn: 0.31
+2024-09-15 21:06:55,267 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 21:06:55,978 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 21:06:55,982 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 21:06:55,984 - __main__ - INFO - Published data to MQTT: {'going_down': 3, 'going_up': 3}
+2024-09-15 21:06:55,984 - __main__ - DEBUG - Counters drawn: Going Down=3, Going Up=3
+2024-09-15 21:06:55,987 - __main__ - DEBUG - FPS drawn: 0.35
+2024-09-15 21:06:56,009 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 21:06:56,726 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 21:06:56,728 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 21:06:56,814 - __main__ - INFO - Published data to MQTT: {'going_down': 3, 'going_up': 3}
+2024-09-15 21:06:56,834 - __main__ - DEBUG - Counters drawn: Going Down=3, Going Up=3
+2024-09-15 21:06:56,950 - __main__ - DEBUG - FPS drawn: 0.39
+2024-09-15 21:06:57,043 - __main__ - INFO - Exiting the main loop.
+2024-09-15 21:06:57,076 - __main__ - INFO - Video stream released.
+2024-09-15 21:06:57,177 - __main__ - INFO - Published data to MQTT: {'going_down': 3, 'going_up': 3}

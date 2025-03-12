@@ -1,0 +1,99 @@
+2024-09-15 16:53:47,187 - __main__ - INFO - Device: cpu
+2024-09-15 16:53:47,219 - __main__ - INFO - Connected to MQTT broker at 103.245.38.40:1883
+2024-09-15 16:53:47,219 - __main__ - INFO - Starting main function.
+2024-09-15 16:53:47,302 - __main__ - INFO - Loading model from ./yolov3-tinyu_1.onnx
+2024-09-15 16:53:47,307 - __main__ - INFO - Labels loaded: ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat']
+2024-09-15 16:53:47,356 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:53:50,447 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:53:50,447 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:53:50,463 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:53:50,463 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:53:50,463 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:53:50,469 - __main__ - DEBUG - FPS drawn: 0.32
+2024-09-15 16:53:51,002 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:53:53,635 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:53:53,637 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:53:53,638 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:53:53,639 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:53:53,639 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:53:53,642 - __main__ - DEBUG - FPS drawn: 0.32
+2024-09-15 16:53:54,106 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:53:57,008 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:53:57,008 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:53:57,008 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:53:57,008 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:53:57,018 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:53:57,020 - __main__ - DEBUG - FPS drawn: 0.31
+2024-09-15 16:53:57,203 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:53:59,905 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:53:59,907 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:53:59,908 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:53:59,909 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:53:59,910 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:53:59,910 - __main__ - DEBUG - FPS drawn: 0.32
+2024-09-15 16:54:00,075 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:02,619 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:02,625 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:02,626 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:02,628 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:02,629 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:02,631 - __main__ - DEBUG - FPS drawn: 0.33
+2024-09-15 16:54:03,340 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:06,819 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:06,821 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:06,821 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:06,821 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:06,821 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:06,821 - __main__ - DEBUG - FPS drawn: 0.31
+2024-09-15 16:54:06,913 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:09,616 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:09,616 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:09,616 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:09,616 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:09,616 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:09,616 - __main__ - DEBUG - FPS drawn: 0.31
+2024-09-15 16:54:09,950 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:12,561 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:12,562 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:12,562 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:12,562 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:12,562 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:12,562 - __main__ - DEBUG - FPS drawn: 0.32
+2024-09-15 16:54:12,735 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:15,468 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:15,472 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:15,473 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:15,474 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:15,476 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:15,477 - __main__ - DEBUG - FPS drawn: 0.32
+2024-09-15 16:54:15,595 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:18,287 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:18,287 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:18,287 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:18,296 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:18,305 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:18,306 - __main__ - DEBUG - FPS drawn: 0.32
+2024-09-15 16:54:18,482 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:19,262 - __main__ - ERROR - Failed to retrieve frame from stream. Attempting to reconnect...
+2024-09-15 16:54:20,871 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:20,874 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:20,875 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:20,875 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:20,875 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:20,878 - __main__ - DEBUG - FPS drawn: 0.33
+2024-09-15 16:54:21,348 - __main__ - INFO - Reconnected to video source: ../veh2.mp4
+2024-09-15 16:54:21,858 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:24,388 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:24,388 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:24,388 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:24,406 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:24,408 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:24,410 - __main__ - DEBUG - FPS drawn: 0.32
+2024-09-15 16:54:24,517 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 16:54:27,038 - __main__ - ERROR - Error during detection: [ONNXRuntimeError] : 7 : INVALID_PROTOBUF : Load model from yolov3-tinyu_1.onnx failed:Protobuf parsing failed.
+2024-09-15 16:54:27,039 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 16:54:27,039 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 16:54:27,039 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 16:54:27,044 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 16:54:27,047 - __main__ - DEBUG - FPS drawn: 0.33
+2024-09-15 16:54:27,128 - __main__ - DEBUG - Getting detections from the frame.

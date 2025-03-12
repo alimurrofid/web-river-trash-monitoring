@@ -1,0 +1,7 @@
+2024-09-15 11:13:56,928 - __main__ - INFO - Device: cpu
+2024-09-15 11:13:56,958 - __main__ - INFO - Connected to MQTT broker at 103.245.38.40:1883
+2024-09-15 11:13:56,964 - __main__ - INFO - Starting main function.
+2024-09-15 11:13:57,024 - __main__ - INFO - Loading model from ./yolov3-tinyu.pt
+2024-09-15 11:13:57,138 - __main__ - INFO - Labels loaded: ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat']
+2024-09-15 11:13:57,158 - __main__ - ERROR - Error in main function: cannot access local variable 'count' where it is not associated with a value
+2024-09-15 11:13:57,163 - __main__ - INFO - MQTT client disconnected and garbage collected.

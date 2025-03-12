@@ -1,0 +1,12 @@
+2024-09-15 17:15:44,126 - __main__ - INFO - Device: cpu
+2024-09-15 17:15:44,153 - __main__ - INFO - Connected to MQTT broker at 103.245.38.40:1883
+2024-09-15 17:15:44,160 - __main__ - INFO - Starting main function.
+2024-09-15 17:15:44,229 - __main__ - INFO - Loading model from ./yolov3-tinyu.pt
+2024-09-15 17:15:44,360 - __main__ - INFO - Labels loaded: ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat']
+2024-09-15 17:15:44,391 - __main__ - DEBUG - Getting detections from the frame.
+2024-09-15 17:15:56,595 - __main__ - DEBUG - Processing bounding boxes.
+2024-09-15 17:15:56,603 - __main__ - DEBUG - Lines drawn on the frame.
+2024-09-15 17:15:56,603 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
+2024-09-15 17:15:56,603 - __main__ - DEBUG - Counters drawn: Going Down=0, Going Up=0
+2024-09-15 17:15:56,603 - __main__ - DEBUG - FPS drawn: 0.08
+2024-09-15 17:15:56,621 - __main__ - ERROR - Exception in main: 'int' object has no attribute 'stdin'
