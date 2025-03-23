@@ -1,8 +1,0 @@
-2024-09-18 17:21:27,794 - __main__ - INFO - Device: cpu
-2024-09-18 17:21:27,823 - __main__ - INFO - Connected to MQTT broker at 103.245.38.40:1883
-2024-09-18 17:21:27,898 - __main__ - INFO - Loading model from ./yolov3-tinyu.pt
-2024-09-18 17:21:28,037 - __main__ - INFO - Labels loaded: ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat']
-2024-09-18 17:21:28,048 - __main__ - INFO - FFmpeg process started.
-2024-09-18 17:21:46,003 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
-2024-09-18 17:21:48,055 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
-2024-09-18 17:21:49,311 - __main__ - INFO - Published data to MQTT: {'going_down': 0, 'going_up': 0}
