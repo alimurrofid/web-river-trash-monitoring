@@ -50,7 +50,7 @@ const navItems: NavItem[] = [
   {
     icon: <BoxCubeIcon />,
     name: "Billboard",
-    path: "/videos",
+    path: "/billboards",
   },
   {
     name: "Laporan",

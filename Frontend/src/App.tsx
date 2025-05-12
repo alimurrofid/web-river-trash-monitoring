@@ -19,6 +19,8 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import StreamingPage from "./pages/UiElements/Stream";
+import BillboardCards from "./components/ui/card/Billboardcard";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
   return (
@@ -29,7 +31,13 @@ export default function App() {
           <Route index path="/" element={<SignIn />} />
           <Route path="/stream/:linkId" element={<StreamingPage />} />
           {/* Dashboard Layout */}
-          <Route element={<AppLayout />}>
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route index path="/dashboard" element={<Home />} />
 
             {/* Others Page */}
@@ -49,6 +57,7 @@ export default function App() {
             <Route path="/badge" element={<Badges />} />
             <Route path="/buttons" element={<Buttons />} />
             <Route path="/images" element={<Images />} />
+            <Route path="/billboards" element={<BillboardCards />} />
             <Route path="/videos" element={<Videos />} />
 
             {/* Charts */}

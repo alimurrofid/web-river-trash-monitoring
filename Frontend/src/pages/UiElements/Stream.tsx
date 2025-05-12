@@ -35,7 +35,7 @@ export default function StreamingPage() {
       </div>
       <div className="space-y-5 sm:space-y-6">
         <ComponentCard title="Perhitungan kendaraan">
-          <TrafficStats />
+          <TrafficStats billboardName={""} />
         </ComponentCard>
 
       </div>
