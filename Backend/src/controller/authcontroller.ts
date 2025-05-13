@@ -29,6 +29,14 @@ export const login = async (req: Request, res: Response) => {
 
     // Dapatkan user
     const user = await userRepository.findUserByEmail(email);
+    
+    // Pastikan user tidak null
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User tidak ditemukan",
+      });
+    }
 
     // Simpan user ID ke session
     req.session.userId = user.id;
@@ -95,6 +103,13 @@ export const register = async (req: Request, res: Response) => {
 
     // Buat user baru
     const newUser = await userRepository.createUser(email, password);
+
+    if (!newUser) {
+      return res.status(500).json({
+        success: false,
+        message: "Gagal membuat user baru",
+      });
+    }
 
     return res.status(201).json({
       success: true,

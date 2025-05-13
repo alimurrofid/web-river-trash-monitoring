@@ -41,7 +41,8 @@ router.get(
   trafficController.getLatestTrafficData
 );
 
-// Streaming routes (protected)
+// Streaming routes
+// Protected routes - require login
 router.post(
   "/streaming",
   isAuthenticated,
@@ -66,6 +67,13 @@ router.delete(
   "/streaming/:id",
   isAuthenticated,
   streamingController.deleteStreamingLink
+);
+
+// Public route - for validating streaming links
+// This endpoint can be accessed without authentication
+router.get(
+  "/streaming/validate/:linkId",
+  streamingController.validateStreamingLink
 );
 
 export default router;

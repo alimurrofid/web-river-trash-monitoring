@@ -1,18 +1,27 @@
 import { Request, Response } from "express";
 import * as streamingRepository from "../service/streamingRepository.js";
+import crypto from "crypto";
+
+
+/**
+ * Generate a random string for the streaming link
+ */
+const generateRandomString = (length: number = 16): string => {
+  return crypto.randomBytes(length).toString('hex');
+};
 
 /**
  * Membuat link streaming baru
  */
 export const createStreamingLink = async (req: Request, res: Response) => {
   try {
-    const { link, expired_at, id_traffic_billboard, billboard_name } = req.body;
+    const { duration_hours = 1, billboard_name } = req.body;
     
     // Validasi input
-    if (!link || !expired_at || !id_traffic_billboard || !billboard_name) {
+    if (!billboard_name) {
       return res.status(400).json({ 
         success: false,
-        message: "Link, waktu kedaluwarsa, ID traffic billboard, dan nama billboard wajib diisi" 
+        message: "Billboard name wajib diisi" 
       });
     }
     
@@ -24,18 +33,24 @@ export const createStreamingLink = async (req: Request, res: Response) => {
       });
     }
     
-    // Validasi format link (harus dimulai dengan http:// atau https://)
-    if (!link.startsWith('http://') && !link.startsWith('https://')) {
-      return res.status(400).json({
-        success: false,
-        message: "Format link tidak valid (harus dimulai dengan http:// atau https://)"
-      });
-    }
+    // Mendapatkan ID billboard terakhir dari traffic
+    // Idealnya, ini akan query ke database traffic untuk mendapatkan ID terakhir
+    // untuk billboard yang dimaksud
+    const dummyTrafficId = 1; // Dalam implementasi sebenarnya, ini akan diganti dengan query
+
+    // Generate link dan hitung waktu kedaluwarsa
+    const randomString = generateRandomString();
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const link = `${baseUrl}/stream/${billboard_name.toLowerCase()}-${randomString}`;
+    
+    // Hitung waktu kedaluwarsa berdasarkan durasi dalam jam
+    const now = new Date();
+    const expiredAt = new Date(now.getTime() + duration_hours * 60 * 60 * 1000);
     
     const streamingData = {
       link,
-      expired_at: new Date(expired_at),
-      id_traffic_billboard,
+      expired_at: expiredAt,
+      id_traffic_billboard: dummyTrafficId,
       billboard_name
     };
     
@@ -44,7 +59,12 @@ export const createStreamingLink = async (req: Request, res: Response) => {
     return res.status(201).json({
       success: true,
       message: "Link streaming berhasil dibuat",
-      streamingId
+      data: {
+        id: streamingId,
+        link,
+        expired_at: expiredAt,
+        billboard_name
+      }
     });
     
   } catch (error) {
@@ -213,6 +233,69 @@ export const deleteStreamingLink = async (req: Request, res: Response) => {
     return res.status(500).json({ 
       success: false,
       message: "Terjadi kesalahan pada server" 
+    });
+  }
+};
+
+/**
+ * Validasi dan handle akses link streaming
+ */
+export const validateStreamingLink = async (req: Request, res: Response) => {
+  try {
+    const { linkId } = req.params;
+    
+    if (!linkId) {
+      return res.status(400).json({
+        success: false,
+        message: "Link ID tidak valid"
+      });
+    }
+    
+    // Extract billboard name from linkId (format: [billboard]-[random])
+    const parts = linkId.split('-');
+    const billboardName = parts[0].toUpperCase();
+    
+    if (!["A", "B", "C"].includes(billboardName)) {
+      return res.status(400).json({
+        success: false,
+        message: "Billboard tidak valid"
+      });
+    }
+    
+    // Check if there's an active link for this billboard
+    const streamingLink = await streamingRepository.getActiveStreamingLinkByBillboard(billboardName);
+    
+    if (!streamingLink) {
+      return res.status(404).json({
+        success: false,
+        message: "Link streaming tidak ditemukan atau sudah kedaluwarsa"
+      });
+    }
+    
+    // Verify that the link matches our pattern
+    if (!streamingLink.link.includes(linkId)) {
+      return res.status(403).json({
+        success: false,
+        message: "Link streaming tidak valid"
+      });
+    }
+    
+    // Link is valid, return streaming data
+    return res.status(200).json({
+      success: true,
+      message: "Link streaming valid",
+      data: {
+        billboard_name: streamingLink.billboard_name,
+        link: streamingLink.link,
+        expired_at: streamingLink.expired_at
+      }
+    });
+    
+  } catch (error) {
+    console.error("Validate streaming link error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan pada server"
     });
   }
 };

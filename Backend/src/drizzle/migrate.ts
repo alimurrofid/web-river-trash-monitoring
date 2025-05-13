@@ -1,7 +1,7 @@
 import mysql from "mysql2/promise";
 import { drizzle } from "drizzle-orm/mysql2";
 import { migrate } from "drizzle-orm/mysql2/migrator";
-import * as schema from "./schema"; // Import your schema file
+import * as schema from "./schema.js"; // Import your schema file
 
 async function main() {
   console.log("Starting database migration...");
