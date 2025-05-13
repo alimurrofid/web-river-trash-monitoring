@@ -11,7 +11,6 @@ import {
   // ListIcon,
   // PageIcon,
   // PieChartIcon,
-  PlugInIcon,
   TableIcon,
   // UserCircleIcon,
 } from "../icons";
@@ -59,13 +58,18 @@ const navItems: NavItem[] = [
     path: "/basic-tables",
   },
   {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
+    icon: <TableIcon />,
+    name: "Manajemen Link",
+    path: "/active-links",
   },
+  // {
+  //   icon: <PlugInIcon />,
+  //   name: "Authentication",
+  //   subItems: [
+  //     { name: "Sign In", path: "/signin", pro: false },
+  //     { name: "Sign Up", path: "/signup", pro: false },
+  //   ],
+  // },
   // {
   //   name: "Pages",
   //   icon: <PageIcon />,

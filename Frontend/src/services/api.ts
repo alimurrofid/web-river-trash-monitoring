@@ -26,7 +26,7 @@ export const saveTrafficData = async (data: TrafficData): Promise<any> => {
 // Function to get traffic data by billboard
 export const getTrafficByBillboard = async (
   billboard: string,
-  limit: number = 100
+  _limit: number = 100
 ): Promise<any> => {
   try {
     const response = await api.get(`/traffic/billboard/${billboard}`);
@@ -129,13 +129,20 @@ export const exportTrafficData = async (
 
 // Function to generate streaming link
 export const generateStreamingLink = async (
-  billboard: string
-): Promise<StreamingLink> => {
+  billboard: string,
+  durationHours: number = 1
+): Promise<string> => {
   try {
     const response = await api.post("/streaming", {
       billboard_name: billboard,
+      duration_hours: durationHours,
     });
-    return response.data.link;
+
+    if (response.data && response.data.success && response.data.data) {
+      return response.data.data.link;
+    }
+
+    throw new Error("Failed to generate streaming link");
   } catch (error) {
     console.error("Error generating streaming link:", error);
     throw error;
@@ -148,20 +155,73 @@ export const getActiveStreamingLinks = async (
 ): Promise<StreamingLink[]> => {
   try {
     const response = await api.get(`/streaming/billboard/${billboard}`);
-    return response.data.links;
+    
+    if (response.data && response.data.success && response.data.data) {
+      return Array.isArray(response.data.data) 
+        ? response.data.data 
+        : [response.data.data];
+    }
+    
+    return [];
   } catch (error) {
     console.error("Error getting streaming links:", error);
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      // No active links found - not an error
+      return [];
+    }
     throw error;
   }
 };
 
+// Function to get a specific streaming link by ID
+export const getStreamingLinkById = async (
+  linkId: string
+): Promise<StreamingLink | null> => {
+  try {
+    const response = await api.get(`/streaming/validate/${linkId}`);
+    
+    if (response.data && response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Error getting streaming link:", error);
+    return null;
+  }
+};
+
 // Function to delete a streaming link
-export const deleteStreamingLink = async (id: number): Promise<any> => {
+export const deleteStreamingLink = async (id: number): Promise<boolean> => {
   try {
     const response = await api.delete(`/streaming/${id}`);
-    return response.data;
+    return response.data && response.data.success;
   } catch (error) {
     console.error("Error deleting streaming link:", error);
+    throw error;
+  }
+};
+
+// Function to get active streaming link by billboard
+export const getActiveStreamingLinkByBillboard = async (
+  billboard: string
+): Promise<any> => {
+  try {
+    const response = await api.get(`/streaming/billboard/${billboard}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error getting active streaming link for billboard ${billboard}:`, error);
+    throw error;
+  }
+};
+
+// Function to validate a streaming link
+export const validateStreamingLink = async (linkId: string): Promise<any> => {
+  try {
+    const response = await api.get(`/streaming/validate/${linkId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error validating streaming link:", error);
     throw error;
   }
 };

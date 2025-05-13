@@ -1,5 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { useEffect, useState } from "react";
+import { getActiveStreamingLinks } from "../services/api";
 
 
 interface Link {
@@ -17,10 +19,11 @@ export const useFetchValidLinks = (billboardName?: string) => {
   useEffect(() => {
     const getLinks = async () => {
       try {
-        // Fetch semua link
-        const data = useFetchValidLinks();
+        // Fetch links - properly await the API call
+        // Using billboardName or empty string as fallback
+        const data = await getActiveStreamingLinks(billboardName || "");
 
-        // Filter link berdasarkan billboard_name jika tersedia
+        // If billboard name is provided, filter the data
         if (billboardName) {
           const filteredLinks = data.filter(
             (link: Link) => link.billboard_name === billboardName
@@ -29,7 +32,7 @@ export const useFetchValidLinks = (billboardName?: string) => {
         } else {
           setLinks(data);
         }
-      } catch {
+      } catch (error) {
         setError("Failed to fetch links.");
       } finally {
         setLoading(false);

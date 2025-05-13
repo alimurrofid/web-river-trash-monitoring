@@ -21,6 +21,7 @@ import Home from "./pages/Dashboard/Home";
 import StreamingPage from "./pages/UiElements/Stream";
 import BillboardCards from "./components/ui/card/Billboardcard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ActiveLinks from "./pages/ReportLink/Report-link";
 
 export default function App() {
   return (
@@ -59,6 +60,7 @@ export default function App() {
             <Route path="/images" element={<Images />} />
             <Route path="/billboards" element={<BillboardCards />} />
             <Route path="/videos" element={<Videos />} />
+            <Route path="/active-links" element={<ActiveLinks />} />
 
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
