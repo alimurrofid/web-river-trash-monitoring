@@ -113,7 +113,7 @@ export const useAuth = (): UseAuthReturn => {
       await authService.logout();
       setUser(null);
       setIsAuthenticated(false);
-      navigate("/signin");
+      navigate("/");
     } catch (err) {
       console.error("Logout error:", err);
       if (err instanceof Error) {

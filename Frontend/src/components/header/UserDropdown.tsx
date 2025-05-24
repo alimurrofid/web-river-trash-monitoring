@@ -1,7 +1,6 @@
 import { useState } from "react";
 // import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link } from "react-router";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function UserDropdown() {
@@ -27,9 +26,6 @@ export default function UserDropdown() {
         onClick={toggleDropdown}
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
-        <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <img src="/images/user/owner.jpg" alt="User" />
-        </span>
         <span className="block mr-1 font-medium text-theme-sm">
           {user?.email || "User"}
         </span>
@@ -66,34 +62,6 @@ export default function UserDropdown() {
           </p>
         </div>
 
-        <Link
-          to="/profile"
-          onClick={closeDropdown}
-          className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-        >
-          <svg
-            className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4ZM10 8C10 6.89543 10.8954 6 12 6C13.1046 6 14 6.89543 14 8C14 9.10457 13.1046 10 12 10C10.8954 10 10 9.10457 10 8Z"
-              fill=""
-            />
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M12 14C8.13401 14 5 17.134 5 21H7C7 18.2386 9.23858 16 12 16C14.7614 16 17 18.2386 17 21H19C19 17.134 15.866 14 12 14Z"
-              fill=""
-            />
-          </svg>
-          Profile
-        </Link>
 
         <button
           onClick={handleLogout}
