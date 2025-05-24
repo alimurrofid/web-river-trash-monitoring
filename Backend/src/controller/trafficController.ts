@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import * as trafficRepository from "../service/trafficRepository.js";
 import { generateCsvFile, generateExcelFile } from "../utils/exportUtill.js";
+import { trafficService } from "../main.js";
 
 /**
  * Mencatat data traffic baru
@@ -63,6 +64,49 @@ export const recordTraffic = async (req: Request, res: Response) => {
   }
 };
 
+export const manualSaveTraffic = async (req: Request, res: Response) => {
+  try {
+    const { billboard_name } = req.body;
+
+    // Validasi input
+    if (!billboard_name) {
+      return res.status(400).json({
+        success: false,
+        message: "Billboard name wajib diisi",
+      });
+    }
+
+    // Validasi billboard_name (A, B, atau C)
+    if (!["A", "B", "C"].includes(billboard_name)) {
+      return res.status(400).json({
+        success: false,
+        message: "Billboard name hanya boleh A, B, atau C",
+      });
+    }
+
+    // Trigger manual save dari service
+    const trafficId = await trafficService.manualSave(billboard_name);
+
+    if (!trafficId) {
+      return res.status(200).json({
+        success: true,
+        message: "Tidak ada perubahan data untuk disimpan",
+      });
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Data traffic berhasil disimpan secara manual",
+      trafficId,
+    });
+  } catch (error) {
+    console.error("Manual save traffic error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan pada server",
+    });
+  }
+};
 /**
  * Mendapatkan data traffic berdasarkan billboard
  */

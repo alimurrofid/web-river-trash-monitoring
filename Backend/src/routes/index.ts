@@ -41,6 +41,11 @@ router.get(
   trafficController.getLatestTrafficData
 );
 
+router.post(
+  "/traffic/manual-save",
+  isAuthenticated,
+  trafficController.manualSaveTraffic
+);
 // Streaming routes
 // Protected routes - require login
 router.post(

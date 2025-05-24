@@ -7,6 +7,7 @@ import "dotenv/config";
 import { connection } from "./drizzle/db.js";
 import routes from "./routes/index.js";
 import { errorHandler, notFoundHandler } from "./middleware/authMiddleware.js";
+import { initScheduledTrafficService } from "./service/scheduledTraffic.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,6 +41,9 @@ app.use(
     },
   })
 );
+
+// Initialize scheduled traffic service
+export const trafficService = initScheduledTrafficService();
 
 // Tipe untuk session
 declare module "express-session" {

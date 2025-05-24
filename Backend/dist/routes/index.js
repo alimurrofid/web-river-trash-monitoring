@@ -17,6 +17,7 @@ router.get("/traffic/daterange", isAuthenticated, trafficController.getTrafficBy
 router.get("/traffic/dashboard", isAuthenticated, trafficController.getDashboardData);
 router.get("/traffic/export", isAuthenticated, trafficController.exportTrafficData);
 router.get("/traffic/latest", isAuthenticated, trafficController.getLatestTrafficData);
+router.post("/traffic/manual-save", isAuthenticated, trafficController.manualSaveTraffic);
 // Streaming routes
 // Protected routes - require login
 router.post("/streaming", isAuthenticated, streamingController.createStreamingLink);
