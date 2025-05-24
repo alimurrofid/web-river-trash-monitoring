@@ -34,6 +34,19 @@ export interface TrafficData {
   big_vehicle_up: number;
 }
 
+// Interface untuk data MQTT yang diterima
+export interface MQTTTrafficData {
+  car_down: number;
+  car_up: number;
+  motorcycle_down: number;
+  motorcycle_up: number;
+  truck_down: number;
+  truck_up: number;
+  bus_down: number;
+  bus_up: number;
+}
+
+
 // Interface untuk data trafik dengan informasi tambahan dari database
 export interface TrafficDataExtended extends TrafficData {
   id?: number;

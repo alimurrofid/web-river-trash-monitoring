@@ -12,6 +12,19 @@ const api = axios.create({
   },
 });
 
+// Fungsi untuk memicu penyimpanan data traffic secara manual
+export const saveTrafficDataManually = async (billboard_name: string) => {
+  try {
+    const response = await axios.post(`/traffic/manual-save`, {
+      billboard_name
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to save traffic data manually:", error);
+    throw error;
+  }
+};
+
 // Function to save traffic data to the backend
 export const saveTrafficData = async (data: TrafficData): Promise<any> => {
   try {

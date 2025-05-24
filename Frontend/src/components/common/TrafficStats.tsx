@@ -9,17 +9,13 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
     car_up,
     motorcycle_down,
     motorcycle_up,
-    truck_down,
-    truck_up,
-    bus_down,
-    bus_up,
+    big_vehicle_down,
+    big_vehicle_up,
     timeUntilReset,
-    isResetting,
-    resetData,
   } = useMQTT(billboardName);
 
   // State untuk menangani pesan reset manual
-  const [resetMessage, setResetMessage] = useState<{
+  const [resetMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
@@ -31,41 +27,41 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
     return `${minutes}m ${seconds}s`;
   };
 
-  // Menangani pengiriman data manual
-  const handleManualSubmit = async () => {
-    try {
-      setResetMessage(null);
+  // // Menangani pengiriman data manual
+  // const handleManualSubmit = async () => {
+  //   try {
+  //     setResetMessage(null);
 
-      const success = await resetData();
+  //     const success = await resetData();
 
-      if (success) {
-        setResetMessage({
-          type: "success",
-          text: "Data berhasil disimpan ke database dan counter direset.",
-        });
-      } else {
-        setResetMessage({
-          type: "error",
-          text: "Gagal menyimpan data. Silakan coba lagi.",
-        });
-      }
-    } catch (error) {
-      console.error("Error saat reset manual:", error);
-      setResetMessage({
-        type: "error",
-        text: "Terjadi error saat mengirim data.",
-      });
-    }
+  //     if (success) {
+  //       setResetMessage({
+  //         type: "success",
+  //         text: "Data berhasil disimpan ke database.",
+  //       });
+  //     } else {
+  //       setResetMessage({
+  //         type: "error",
+  //         text: "Gagal menyimpan data. Silakan coba lagi.",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error saat simpan manual:", error);
+  //     setResetMessage({
+  //       type: "error",
+  //       text: "Terjadi error saat mengirim data.",
+  //     });
+  //   }
 
-    // Hapus pesan setelah 5 detik
-    setTimeout(() => {
-      setResetMessage(null);
-    }, 5000);
-  };
+  //   // Hapus pesan setelah 5 detik
+  //   setTimeout(() => {
+  //     setResetMessage(null);
+  //   }, 5000);
+  // };
 
   // Hitung total kendaraan
-  const totalDown = car_down + motorcycle_down + truck_down + bus_down;
-  const totalUp = car_up + motorcycle_up + truck_up + bus_up;
+  const totalDown = car_down + motorcycle_down + big_vehicle_down;
+  const totalUp = car_up + motorcycle_up + big_vehicle_up;
   const totalVehicles = totalDown + totalUp;
 
   // Hitung persentase (hindari pembagian dengan nol)
@@ -80,8 +76,11 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
       value: motorcycle_down + motorcycle_up,
       color: "bg-green-500",
     },
-    { type: "Trucks", value: truck_down + truck_up, color: "bg-yellow-500" },
-    { type: "Buses", value: bus_down + bus_up, color: "bg-purple-500" },
+    {
+      type: "Big Vehicles",
+      value: big_vehicle_down + big_vehicle_up,
+      color: "bg-yellow-500",
+    },
   ];
 
   // Urutkan berdasarkan jumlah tertinggi
@@ -97,10 +96,16 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
       color: "bg-yellow-500",
     },
     { label: "Motorcycle Up", value: motorcycle_up, color: "bg-purple-500" },
-    { label: "Truck Down", value: truck_down, color: "bg-red-500" },
-    { label: "Truck Up", value: truck_up, color: "bg-indigo-500" },
-    { label: "Bus Down", value: bus_down, color: "bg-pink-500" },
-    { label: "Bus Up", value: bus_up, color: "bg-gray-500" },
+    {
+      label: "Big Vehicle Down",
+      value: big_vehicle_down,
+      color: "bg-red-500",
+    },
+    {
+      label: "Big Vehicle Up",
+      value: big_vehicle_up,
+      color: "bg-indigo-500",
+    },
   ];
 
   return (
@@ -128,7 +133,7 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
               </svg>
               Pengiriman otomatis dalam: {formatTimeUntilReset()}
             </div>
-            <button
+            {/* <button
               onClick={handleManualSubmit}
               disabled={isResetting}
               className={`flex items-center px-3 py-1 text-xs font-medium rounded ${
@@ -180,7 +185,7 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
                   Simpan Data Sekarang
                 </>
               )}
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -239,7 +244,7 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
           <p className="text-sm text-blue-800 dark:text-blue-300 mb-2">
             Jenis Kendaraan
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {vehicleTypes.map((item, index) => (
               <div key={index} className="text-center">
                 <div className="mb-1">
@@ -266,7 +271,7 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {stats.map((stat, index) => (
           <div
             key={index}
@@ -295,10 +300,10 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
             />
           </svg>
           <span>
-            Data di atas adalah data real-time terakhir yang diterima dari
-            kamera. Data akan disimpan ke database secara otomatis setiap jam,
-            atau Anda dapat menyimpannya secara manual dengan tombol "Simpan
-            Data Sekarang".
+            Data di atas adalah data real-time kumulatif dari kamera. Setiap
+            jam, sistem akan menghitung selisih data sejak terakhir disimpan dan
+            menyimpannya ke database. Big Vehicle adalah gabungan dari kendaraan
+            jenis truck dan bus.
           </span>
         </div>
       </div>
