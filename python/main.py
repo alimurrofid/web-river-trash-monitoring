@@ -314,7 +314,7 @@ def main(model_path, rtmp_url, video_source='../malam2.mp4'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Multi-vehicle detection and counting.')
     parser.add_argument('--model', default='./yolov5nupre.pt', help='Model path')
-    parser.add_argument('--rtmp', default='rtmp://103.245.38.40/live/test', help='RTMP URL')
+    parser.add_argument('--rtmp', default='rtmp://streaming.theaida.id:1945/live/test', help='RTMP URL')
     parser.add_argument('--source', default='../malam2.mp4', help='Video source path or RTSP URL')
     args = parser.parse_args()
 
