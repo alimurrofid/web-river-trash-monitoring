@@ -35,7 +35,6 @@ export const streaming = mysqlTable("streaming", {
   id: int("id").primaryKey().autoincrement(),
   link: varchar("link", { length: 255 }).notNull(),
   created_at: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
-  expired_at: timestamp("expired_at"),
   id_traffic_billboard: int("id_traffic_billboard").notNull(),
   billboard_name: varchar("billboard_name", { length: 50 }).notNull(),
 });

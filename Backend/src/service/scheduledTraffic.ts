@@ -52,7 +52,7 @@ let currentTrafficData: MQTTTrafficData = {
 };
 
 // Konfigurasi MQTT
-const MQTT_BROKER_URL = "mqtt://103.245.38.40:1883";
+const MQTT_BROKER_URL = "mqtt://streaming.theaida.id:1883";
 const MQTT_TOPIC = "vehicle/interactions";
 
 // Koneksi ke MQTT broker

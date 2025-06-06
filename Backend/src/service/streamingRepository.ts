@@ -8,21 +8,21 @@ import { streaming } from "../drizzle/schema.js";
  */
 export interface StreamingInput {
   link: string;
-  expired_at: Date;
   id_traffic_billboard: number;
   billboard_name: string;
 }
 
 /**
- * Membuat link streaming baru
+ * Membuat link streaming baru (tanpa batasan waktu)
  */
 export async function createStreamingLink(data: StreamingInput) {
   // Insert data dan kemudian query untuk mendapatkan ID terakhir
   await db.insert(streaming).values(data);
-  
+
   // Ambil data streaming terakhir yang baru saja dimasukkan
   // Berdasarkan kombinasi unik dari input data (link + billboard_name)
-  const lastInserted = await db.select()
+  const lastInserted = await db
+    .select()
     .from(streaming)
     .where(
       and(
@@ -33,54 +33,47 @@ export async function createStreamingLink(data: StreamingInput) {
     )
     .orderBy(desc(streaming.created_at))
     .limit(1);
-  
+
   return lastInserted.length > 0 ? lastInserted[0].id : null;
 }
 
 /**
- * Mendapatkan semua link streaming yang aktif
+ * Mendapatkan semua link streaming yang aktif (tidak ada filter expired_at)
  */
 export async function getActiveStreamingLinks() {
-  const now = new Date();
-  return await db.select()
-    .from(streaming)
-    .where(gte(streaming.expired_at, now))
-    .orderBy(desc(streaming.created_at));
+  return await db.select().from(streaming).orderBy(desc(streaming.created_at));
 }
 
 /**
- * Mendapatkan link streaming aktif berdasarkan billboard
+ * Mendapatkan link streaming berdasarkan billboard (tidak ada filter expired_at)
  */
 export async function getActiveStreamingLinkByBillboard(billboardName: string) {
-  const now = new Date();
-  const result = await db.select()
+  const result = await db
+    .select()
     .from(streaming)
-    .where(
-      and(
-        eq(streaming.billboard_name, billboardName),
-        gte(streaming.expired_at, now)
-      )
-    )
+    .where(eq(streaming.billboard_name, billboardName))
     .orderBy(desc(streaming.created_at))
     .limit(1);
-  
+
   return result.length > 0 ? result[0] : null;
 }
 
 /**
  * Memperbarui link streaming
  */
-export async function updateStreamingLink(id: number, data: Partial<StreamingInput>) {
-  await db.update(streaming)
-    .set(data)
-    .where(eq(streaming.id, id));
-  
+export async function updateStreamingLink(
+  id: number,
+  data: Partial<StreamingInput>
+) {
+  await db.update(streaming).set(data).where(eq(streaming.id, id));
+
   // Ambil data yang sudah diupdate
-  const result = await db.select()
+  const result = await db
+    .select()
     .from(streaming)
     .where(eq(streaming.id, id))
     .limit(1);
-  
+
   return result.length > 0 ? result[0] : null;
 }
 
@@ -88,6 +81,5 @@ export async function updateStreamingLink(id: number, data: Partial<StreamingInp
  * Menghapus link streaming
  */
 export async function deleteStreamingLink(id: number) {
-  await db.delete(streaming)
-    .where(eq(streaming.id, id));
+  await db.delete(streaming).where(eq(streaming.id, id));
 }
