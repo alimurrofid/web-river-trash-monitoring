@@ -3,7 +3,6 @@ import { GenerateLinkProps } from "../../services/interface";
 import { generateStreamingLink } from "../../services/api";
 
 const GenerateLink: React.FC<GenerateLinkProps> = ({ billboardName }) => {
-  const [duration, setDuration] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<{
     success: boolean;
@@ -19,7 +18,8 @@ const GenerateLink: React.FC<GenerateLinkProps> = ({ billboardName }) => {
       setIsLoading(true);
       setResult({ success: false, message: "" });
 
-      const link = await generateStreamingLink(billboardName, duration);
+      // Tidak lagi mengirim duration_hours
+      const link = await generateStreamingLink(billboardName);
 
       setResult({
         success: true,
@@ -46,22 +46,13 @@ const GenerateLink: React.FC<GenerateLinkProps> = ({ billboardName }) => {
     <div className="p-4">
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Duration (hours)
+          Generate Streaming Link for Billboard {billboardName}
         </label>
         <div className="flex items-center">
-          <input
-            type="number"
-            min="1"
-            max="24"
-            value={duration}
-            onChange={(e) => setDuration(parseInt(e.target.value) || 1)}
-            className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm 
-                      border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md"
-          />
           <button
             onClick={handleGenerateLink}
             disabled={isLoading}
-            className="ml-3 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium 
+            className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium 
                       rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none 
                       focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
@@ -90,7 +81,7 @@ const GenerateLink: React.FC<GenerateLinkProps> = ({ billboardName }) => {
                 Generating...
               </span>
             ) : (
-              "Generate Link"
+              "Generate Streaming Link"
             )}
           </button>
         </div>
@@ -137,9 +128,8 @@ const GenerateLink: React.FC<GenerateLinkProps> = ({ billboardName }) => {
                   </svg>
                 </button>
               </div>
-              <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">
-                This link will expire in {duration} hour
-                {duration > 1 ? "s" : ""}.
+              <p className="text-sm mt-1 text-blue-600 dark:text-blue-400">
+                This link will be permanently active until manually deleted.
               </p>
             </div>
           )}

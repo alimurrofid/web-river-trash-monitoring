@@ -16,7 +16,7 @@ const api = axios.create({
 export const saveTrafficDataManually = async (billboard_name: string) => {
   try {
     const response = await axios.post(`/traffic/manual-save`, {
-      billboard_name
+      billboard_name,
     });
     return response.data;
   } catch (error) {
@@ -140,15 +140,13 @@ export const exportTrafficData = async (
   }
 };
 
-// Function to generate streaming link
+// Function to generate streaming link (tanpa parameter duration)
 export const generateStreamingLink = async (
-  billboard: string,
-  durationHours: number = 1
+  billboard: string
 ): Promise<string> => {
   try {
     const response = await api.post("/streaming", {
       billboard_name: billboard,
-      duration_hours: durationHours,
     });
 
     if (response.data && response.data.success && response.data.data) {
@@ -168,13 +166,13 @@ export const getActiveStreamingLinks = async (
 ): Promise<StreamingLink[]> => {
   try {
     const response = await api.get(`/streaming/billboard/${billboard}`);
-    
+
     if (response.data && response.data.success && response.data.data) {
-      return Array.isArray(response.data.data) 
-        ? response.data.data 
+      return Array.isArray(response.data.data)
+        ? response.data.data
         : [response.data.data];
     }
-    
+
     return [];
   } catch (error) {
     console.error("Error getting streaming links:", error);
@@ -192,11 +190,11 @@ export const getStreamingLinkById = async (
 ): Promise<StreamingLink | null> => {
   try {
     const response = await api.get(`/streaming/validate/${linkId}`);
-    
+
     if (response.data && response.data.success && response.data.data) {
       return response.data.data;
     }
-    
+
     return null;
   } catch (error) {
     console.error("Error getting streaming link:", error);
@@ -223,7 +221,10 @@ export const getActiveStreamingLinkByBillboard = async (
     const response = await api.get(`/streaming/billboard/${billboard}`);
     return response.data;
   } catch (error) {
-    console.error(`Error getting active streaming link for billboard ${billboard}:`, error);
+    console.error(
+      `Error getting active streaming link for billboard ${billboard}:`,
+      error
+    );
     throw error;
   }
 };

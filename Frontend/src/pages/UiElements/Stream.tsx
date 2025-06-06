@@ -14,7 +14,6 @@ interface StreamingParams {
 interface StreamingData {
   billboard_name: string;
   link: string;
-  expired_at: string;
   valid: boolean;
 }
 
@@ -63,7 +62,6 @@ export default function StreamingPage() {
             setStreamData({
               billboard_name: validationResponse.data.billboard_name,
               link: validationResponse.data.link,
-              expired_at: validationResponse.data.expired_at,
               valid: true,
             });
           } else {
@@ -84,7 +82,6 @@ export default function StreamingPage() {
                 setStreamData({
                   billboard_name: response.data.billboard_name,
                   link: response.data.link,
-                  expired_at: response.data.expired_at,
                   valid: true,
                 });
               } else {
@@ -95,18 +92,17 @@ export default function StreamingPage() {
             }
           } catch (fallbackErr) {
             console.error("Fallback error:", fallbackErr);
-            setError("This streaming link is invalid or has expired");
+            setError("This streaming link is invalid or not found");
             setStreamData({
               billboard_name: billboardName,
               link: "",
-              expired_at: "",
               valid: false,
             });
           }
         }
       } catch (err) {
         console.error("Error fetching streaming data:", err);
-        setError("Unable to load stream. The link may be invalid or expired.");
+        setError("Unable to load stream. The link may be invalid.");
       } finally {
         setLoading(false);
       }
@@ -129,7 +125,7 @@ export default function StreamingPage() {
       <div className="flex flex-col items-center justify-center min-h-screen p-6">
         <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-6 py-4 rounded-md mb-4 max-w-md text-center">
           <h2 className="text-lg font-semibold mb-2">Stream Unavailable</h2>
-          <p>{error || "This streaming link is invalid or has expired"}</p>
+          <p>{error || "This streaming link is invalid or not found"}</p>
         </div>
         <button
           onClick={() => window.close()}
@@ -144,7 +140,7 @@ export default function StreamingPage() {
   // Determine the actual streaming URL to use
   // In a production environment, this would come from your streaming server
   // For now, we'll use the test URL or the one from stream data
-  
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="text-center mb-6">
@@ -157,9 +153,7 @@ export default function StreamingPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-       
-          <FourIsToThree />
-        
+        <FourIsToThree />
 
         <div className="space-y-6">
           <ComponentCard
@@ -194,12 +188,10 @@ export default function StreamingPage() {
                     {streamData.billboard_name}. The AI-powered system counts
                     vehicles in real-time and categorizes them by type.
                   </p>
-                  {streamData.expired_at && (
-                    <p className="mt-2">
-                      This streaming link will expire on{" "}
-                      {new Date(streamData.expired_at).toLocaleString()}.
-                    </p>
-                  )}
+                  <p className="mt-2 text-green-600 dark:text-green-400">
+                    This streaming link is permanently active until manually
+                    deleted.
+                  </p>
                 </div>
               </div>
             </div>

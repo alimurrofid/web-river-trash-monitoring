@@ -19,7 +19,7 @@ const ValidLink: React.FC<ValidLinkProps> = ({ billboardName }) => {
       setLinks(response || []);
     } catch (err) {
       console.error("Error fetching streaming links:", err);
-      setError("Failed to load active streaming links");
+      setError("Failed to load streaming links");
     } finally {
       setIsLoading(false);
     }
@@ -47,28 +47,9 @@ const ValidLink: React.FC<ValidLinkProps> = ({ billboardName }) => {
     alert("Link copied to clipboard!");
   };
 
-  const formatExpiryTime = (expiryDate: string) => {
-    const expiry = new Date(expiryDate);
-    const now = new Date();
-
-    // Calculate time difference in milliseconds
-    const diffMs = expiry.getTime() - now.getTime();
-
-    if (diffMs <= 0) {
-      return "Expired";
-    }
-
-    // Convert to hours and minutes
-    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-    if (diffHrs > 0) {
-      return `${diffHrs} hr${diffHrs > 1 ? "s" : ""} ${diffMins} min${
-        diffMins > 1 ? "s" : ""
-      }`;
-    } else {
-      return `${diffMins} min${diffMins > 1 ? "s" : ""}`;
-    }
+  const formatCreatedTime = (createdDate: string) => {
+    const created = new Date(createdDate);
+    return created.toLocaleString();
   };
 
   return (
@@ -112,7 +93,7 @@ const ValidLink: React.FC<ValidLinkProps> = ({ billboardName }) => {
       ) : links.length === 0 ? (
         <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 rounded-md text-center">
           <p className="text-gray-600 dark:text-gray-400">
-            No active streaming links for this billboard.
+            No streaming links for this billboard.
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
             Generate a new link above to share with others.
@@ -191,7 +172,12 @@ const ValidLink: React.FC<ValidLinkProps> = ({ billboardName }) => {
               </div>
               <div className="mt-2 flex justify-between text-xs text-gray-500 dark:text-gray-400">
                 <span>Billboard: {link.billboard_name}</span>
-                <span>Expires in: {formatExpiryTime(link.expired_at)}</span>
+                <span>Created: {formatCreatedTime(link.created_at)}</span>
+              </div>
+              <div className="mt-1">
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300">
+                  Permanent Link
+                </span>
               </div>
             </div>
           ))}

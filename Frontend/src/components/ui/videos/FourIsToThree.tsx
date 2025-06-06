@@ -6,7 +6,7 @@ interface FourIsToThreeProps {
 }
 
 export default function FourIsToThree({
-  streamUrl = "http://103.245.38.40/hls/test.m3u8",
+  streamUrl = "https://streaming.theaida.id/hls/test.m3u8",
 }: FourIsToThreeProps) {
   const { videoRef, canPlayHLS } = useHLS(streamUrl);
 

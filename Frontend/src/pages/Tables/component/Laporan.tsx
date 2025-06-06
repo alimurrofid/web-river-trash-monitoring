@@ -213,7 +213,6 @@ const Laporan: React.FC = () => {
           0: { cellWidth: 10 }, // No
           1: { cellWidth: 35 }, // Timestamp
         },
-        
       });
 
       // Tambahkan ringkasan di bagian bawah
@@ -253,7 +252,7 @@ const Laporan: React.FC = () => {
   };
 
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-sm border border-stroke bg-white dark:bg-gray-800 px-5 pt-6 pb-2.5 shadow-default dark:border-gray-700 sm:px-7.5 xl:pb-1">
       <div className="mb-6">
         <h3 className="text-xl font-semibold text-black dark:text-white">
           Laporan Data Traffic
@@ -271,7 +270,7 @@ const Laporan: React.FC = () => {
             name="startDate"
             value={filter.startDate}
             onChange={handleFilterChange}
-            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-4 py-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            className="w-full rounded border-[1.5px] border-stroke dark:border-gray-600 bg-transparent dark:bg-gray-700 px-4 py-2 text-black dark:text-white outline-none transition focus:border-primary dark:focus:border-blue-500 active:border-primary disabled:cursor-default disabled:bg-whiter"
           />
         </div>
 
@@ -284,7 +283,7 @@ const Laporan: React.FC = () => {
             name="endDate"
             value={filter.endDate}
             onChange={handleFilterChange}
-            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-4 py-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            className="w-full rounded border-[1.5px] border-stroke dark:border-gray-600 bg-transparent dark:bg-gray-700 px-4 py-2 text-black dark:text-white outline-none transition focus:border-primary dark:focus:border-blue-500 active:border-primary disabled:cursor-default disabled:bg-whiter"
           />
         </div>
 
@@ -296,7 +295,7 @@ const Laporan: React.FC = () => {
             name="billboardName"
             value={filter.billboardName}
             onChange={handleFilterChange}
-            className="w-full rounded border-[1.5px] border-stroke bg-transparent px-4 py-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            className="w-full rounded border-[1.5px] border-stroke dark:border-gray-600 bg-transparent dark:bg-gray-700 px-4 py-2 text-black dark:text-white outline-none transition focus:border-primary dark:focus:border-blue-500 active:border-primary disabled:cursor-default disabled:bg-whiter"
           >
             <option value="all">Semua Billboard</option>
             <option value="A">Billboard A</option>
@@ -308,14 +307,14 @@ const Laporan: React.FC = () => {
         <div className="flex items-end gap-2">
           <button
             onClick={handleResetFilter}
-            className="inline-flex items-center justify-center rounded-md border border-stroke py-2 px-4 text-center font-medium text-black hover:bg-opacity-90 lg:px-6 xl:px-7 dark:border-strokedark dark:text-white"
+            className="inline-flex items-center justify-center rounded-md border border-stroke dark:border-gray-600 py-2 px-4 text-center font-medium text-black dark:text-white hover:bg-opacity-90 hover:bg-gray-50 dark:hover:bg-gray-700 lg:px-6 xl:px-7"
           >
             Reset
           </button>
 
           <button
             onClick={generatePDF}
-            className="inline-flex items-center justify-center rounded-md border border-stroke py-2 px-4 text-center font-medium text-black hover:bg-opacity-90 lg:px-6 xl:px-7 dark:border-strokedark dark:text-white"
+            className="inline-flex items-center justify-center rounded-md border border-stroke dark:border-gray-600 py-2 px-4 text-center font-medium text-black dark:text-white hover:bg-opacity-90 hover:bg-gray-50 dark:hover:bg-gray-700 lg:px-6 xl:px-7"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -340,10 +339,10 @@ const Laporan: React.FC = () => {
       <div className="max-w-full overflow-x-auto">
         {loading ? (
           <div className="flex justify-center items-center py-10">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary dark:border-blue-500"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded relative">
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded relative">
             <strong className="font-bold">Error: </strong>
             <span className="block sm:inline">{error}</span>
           </div>
@@ -370,7 +369,7 @@ const Laporan: React.FC = () => {
         ) : (
           <table className="w-full table-auto">
             <thead>
-              <tr className="bg-gray-2 text-left dark:bg-meta-4">
+              <tr className="bg-gray-50 dark:bg-gray-700 text-left">
                 <th className="min-w-[100px] py-4 px-4 font-medium text-black dark:text-white">
                   No
                 </th>
@@ -417,7 +416,7 @@ const Laporan: React.FC = () => {
                 return (
                   <tr
                     key={index}
-                    className="border-b border-[#eee] hover:bg-gray-100 dark:border-strokedark dark:hover:bg-meta-4"
+                    className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <td className="py-3 px-4 text-black dark:text-white">
                       {indexOfFirstItem + index + 1}
@@ -471,8 +470,8 @@ const Laporan: React.FC = () => {
               disabled={currentPage === 1}
               className={`px-3 py-1 rounded-md ${
                 currentPage === 1
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               &laquo;
@@ -483,8 +482,8 @@ const Laporan: React.FC = () => {
               disabled={currentPage === 1}
               className={`px-3 py-1 rounded-md ${
                 currentPage === 1
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               &lsaquo;
@@ -514,8 +513,8 @@ const Laporan: React.FC = () => {
                   onClick={() => handlePageChange(pageNumber)}
                   className={`px-3 py-1 rounded-md ${
                     currentPage === pageNumber
-                      ? "bg-primary text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                      ? "bg-primary dark:bg-blue-600 text-white"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
                   }`}
                 >
                   {pageNumber}
@@ -528,8 +527,8 @@ const Laporan: React.FC = () => {
               disabled={currentPage === totalPages}
               className={`px-3 py-1 rounded-md ${
                 currentPage === totalPages
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               &rsaquo;
@@ -540,8 +539,8 @@ const Laporan: React.FC = () => {
               disabled={currentPage === totalPages}
               className={`px-3 py-1 rounded-md ${
                 currentPage === totalPages
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
               }`}
             >
               &raquo;

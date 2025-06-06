@@ -47,10 +47,10 @@ export default function ActiveLinks(): React.ReactElement {
         }
       }
 
-      // Sort links by expiration time (ascending)
+      // Sort links by creation time (descending - newest first)
       allLinks.sort((a, b) => {
         return (
-          new Date(a.expired_at).getTime() - new Date(b.expired_at).getTime()
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         );
       });
 
@@ -58,9 +58,7 @@ export default function ActiveLinks(): React.ReactElement {
       setFilteredLinks(allLinks);
     } catch (err) {
       console.error("Error fetching streaming links:", err);
-      setError(
-        "Failed to load active streaming links. Please try again later."
-      );
+      setError("Failed to load streaming links. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -84,16 +82,16 @@ export default function ActiveLinks(): React.ReactElement {
       );
     }
 
-    // Apply date filter (expiration date)
+    // Apply date filter (creation date)
     if (dateFilter.startDate) {
       const startDate = new Date(dateFilter.startDate);
-      result = result.filter((link) => new Date(link.expired_at) >= startDate);
+      result = result.filter((link) => new Date(link.created_at) >= startDate);
     }
 
     if (dateFilter.endDate) {
       const endDate = new Date(dateFilter.endDate);
       endDate.setHours(23, 59, 59, 999); // End of the day
-      result = result.filter((link) => new Date(link.expired_at) <= endDate);
+      result = result.filter((link) => new Date(link.created_at) <= endDate);
     }
 
     setFilteredLinks(result);
@@ -122,28 +120,9 @@ export default function ActiveLinks(): React.ReactElement {
     alert("Link copied to clipboard!");
   };
 
-  const formatExpiryTime = (expiryDate: string) => {
-    const expiry = new Date(expiryDate);
-    const now = new Date();
-
-    // Calculate time difference in milliseconds
-    const diffMs = expiry.getTime() - now.getTime();
-
-    if (diffMs <= 0) {
-      return "Expired";
-    }
-
-    // Convert to hours and minutes
-    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-    if (diffHrs > 0) {
-      return `${diffHrs} hr${diffHrs > 1 ? "s" : ""} ${diffMins} min${
-        diffMins > 1 ? "s" : ""
-      }`;
-    } else {
-      return `${diffMins} min${diffMins > 1 ? "s" : ""}`;
-    }
+  const formatCreatedTime = (createdDate: string) => {
+    const created = new Date(createdDate);
+    return created.toLocaleString();
   };
 
   const resetFilters = () => {
@@ -185,8 +164,8 @@ export default function ActiveLinks(): React.ReactElement {
             </h3>
             <div className="mt-1 text-sm text-blue-700 dark:text-blue-400">
               <p>
-                View and manage all active streaming links across all
-                billboards. You can search, filter, and delete links as needed.
+                View and manage all streaming links across all billboards. All
+                links are permanent until manually deleted.
               </p>
             </div>
           </div>
@@ -229,10 +208,10 @@ export default function ActiveLinks(): React.ReactElement {
             </select>
           </div>
 
-          {/* Date Range Filter - Start */}
+          {/* Date Range Filter - Start (Created After) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Expires After
+              Created After
             </label>
             <input
               type="date"
@@ -245,10 +224,10 @@ export default function ActiveLinks(): React.ReactElement {
             />
           </div>
 
-          {/* Date Range Filter - End */}
+          {/* Date Range Filter - End (Created Before) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Expires Before
+              Created Before
             </label>
             <input
               type="date"
@@ -329,7 +308,7 @@ export default function ActiveLinks(): React.ReactElement {
                 d="M15 15l-6-6m0 0l-6 6m6-6v12a6 6 0 0012 0v-3"
               />
             </svg>
-            <p className="text-lg">No active streaming links found</p>
+            <p className="text-lg">No streaming links found</p>
             <p className="text-sm mt-1">
               {links.length > 0
                 ? "Try adjusting your filters"
@@ -363,7 +342,7 @@ export default function ActiveLinks(): React.ReactElement {
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                   >
-                    Expires In
+                    Status
                   </th>
                   <th
                     scope="col"
@@ -417,13 +396,13 @@ export default function ActiveLinks(): React.ReactElement {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      {link.expired_at
-                        ? new Date(link.expired_at).toLocaleString()
+                      {link.created_at
+                        ? formatCreatedTime(link.created_at)
                         : "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300">
-                        {formatExpiryTime(link.expired_at)}
+                        Permanent
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

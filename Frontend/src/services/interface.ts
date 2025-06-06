@@ -46,7 +46,6 @@ export interface MQTTTrafficData {
   bus_up: number;
 }
 
-
 // Interface untuk data trafik dengan informasi tambahan dari database
 export interface TrafficDataExtended extends TrafficData {
   id?: number;
@@ -58,15 +57,14 @@ export interface BillboardLocationState {
   billboard_name: string;
 }
 
-// Interface for streaming link
+// Interface for streaming link (tanpa expired_at)
 export interface StreamingLink {
   id: number;
   link: string;
-  expired_at: string;
+  created_at: string;
   billboard_name: string;
   id_traffic_billboard: number;
 }
-
 
 // Interface untuk respons API traffic
 export interface TrafficAPIResponse {
@@ -146,10 +144,6 @@ export interface GroupedTrafficData {
   big_vehicle: number;
   total: number;
 }
-
-
-
-
 
 // Interface untuk state filter di RecentOrders
 export interface OrdersFilterState {

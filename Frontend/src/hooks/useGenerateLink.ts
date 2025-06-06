@@ -6,22 +6,42 @@ export const useGenerateLink = () => {
   const [error, setError] = useState<string | null>(null);
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
 
-  const generateLink = async (
-    billboard_id: string, // Changed to string to match API function
-    durationHours: number = 1 // Default value provided
-  ) => {
+  const generateLink = async (billboard_id: string) => {
     setLoading(true);
     setError(null);
+    setGeneratedLink(null);
+
     try {
-      // Updated to match the API function signature
-      const link = await generateStreamingLink(billboard_id, durationHours);
+      // Updated to match the new API function signature (without duration)
+      const link = await generateStreamingLink(billboard_id);
       setGeneratedLink(link);
-    } catch {
-      setError("Failed to generate link.");
+    } catch (error) {
+      console.error("Error generating streaming link:", error);
+      setError("Failed to generate streaming link. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  return { generateLink, generatedLink, loading, error };
+  // Function to clear the generated link
+  const clearGeneratedLink = () => {
+    setGeneratedLink(null);
+    setError(null);
+  };
+
+  // Function to reset all states
+  const reset = () => {
+    setLoading(false);
+    setError(null);
+    setGeneratedLink(null);
+  };
+
+  return {
+    generateLink,
+    generatedLink,
+    loading,
+    error,
+    clearGeneratedLink,
+    reset,
+  };
 };
