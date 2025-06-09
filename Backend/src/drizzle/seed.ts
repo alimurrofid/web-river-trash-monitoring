@@ -1,5 +1,5 @@
-import { db } from "../drizzle/db.ts"; // Sesuaikan path jika berbeda
-import { users } from "../drizzle/schema.ts"; // Sesuaikan path
+import { db } from "../drizzle/db.js"; // Sesuaikan path jika berbeda
+import { users } from "../drizzle/schema.js"; // Sesuaikan path
 import { hash } from "bcryptjs";
 
 async function seedUsers() {
