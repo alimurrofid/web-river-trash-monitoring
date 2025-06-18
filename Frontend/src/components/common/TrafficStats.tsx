@@ -11,7 +11,7 @@ const TrafficStats: React.FC = () => {
     totalPlastic,
     totalNonPlastic,
     totalWastes,
-    timeUntilReset,
+    // timeUntilReset,
   } = useMQTT();
 
   // State untuk menangani pesan reset manual
@@ -21,11 +21,11 @@ const TrafficStats: React.FC = () => {
   } | null>(null);
 
   // Format waktu hingga reset berikutnya menjadi format yang mudah dibaca
-  const formatTimeUntilReset = (): string => {
-    const minutes = Math.floor(timeUntilReset / 60000);
-    const seconds = Math.floor((timeUntilReset % 60000) / 1000);
-    return `${minutes}m ${seconds}s`;
-  };
+  // const formatTimeUntilReset = (): string => {
+  //   const minutes = Math.floor(timeUntilReset / 60000);
+  //   const seconds = Math.floor((timeUntilReset % 60000) / 1000);
+  //   return `${minutes}m ${seconds}s`;
+  // };
 
   // Data statistik untuk ditampilkan di grid
   const stats = [
@@ -63,7 +63,7 @@ const TrafficStats: React.FC = () => {
           <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
             Statistik Sampah
           </h3>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <div className="flex items-center px-3 py-2 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg shadow-sm dark:bg-blue-900/30 dark:text-blue-300">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +81,7 @@ const TrafficStats: React.FC = () => {
               </svg>
               Reset otomatis dalam: {formatTimeUntilReset()}
             </div>
-          </div>
+          </div> */}
         </div>
 
         {resetMessage && (
@@ -97,7 +97,7 @@ const TrafficStats: React.FC = () => {
         )}
 
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          Data diterima secara real-time dari kamera dan disimpan ke database setiap jam.
+          Data diterima secara real-time dari kamera dan disimpan ke database.
         </p>
       </div>
 
@@ -212,11 +212,10 @@ const TrafficStats: React.FC = () => {
           <div className="text-sm text-gray-600 dark:text-gray-400">
             <p className="mb-2 font-medium">Informasi Data:</p>
             <ul className="space-y-1 text-xs">
-              <li>• Data di atas adalah statistik real-time kumulatif dari sistem kamera</li>
-              <li>• Sistem menghitung selisih data setiap jam dan menyimpannya ke database</li>
-              <li>• <strong>Makro:</strong> Sampah berukuran besar yang mudah terdeteksi</li>
-              <li>• <strong>Meso:</strong> Sampah berukuran sedang hingga kecil</li>
-              <li>• Total plastik dan non-plastik dihitung otomatis dari makro + meso</li>
+              <li>• Data di atas adalah statistik real-time kumulatif dari sistem kamera.</li>
+              <li>• <strong>Makro:</strong> Sampah berukuran lebih dari 2,5 cm hingga 1 meter.</li>
+              <li>• <strong>Meso:</strong> Sampah berukuran antara 0,5 cm hingga 2,5 cm.</li>
+              <li>• Total plastik dan non-plastik dihitung otomatis dari makro + meso.</li>
             </ul>
           </div>
         </div>
