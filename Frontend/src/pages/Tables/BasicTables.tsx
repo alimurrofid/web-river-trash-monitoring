@@ -8,8 +8,8 @@ export default function BasicTables() {
   return (
     <>
       <PageMeta
-        title="AIDA | Laporan"
-        description="AIDA Laporan"
+        title="Rivermonitor | Laporan"
+        description="Rivermonitor Laporan"
       />
       <PageBreadcrumb pageTitle="Laporan" />
       <div className="space-y-6">

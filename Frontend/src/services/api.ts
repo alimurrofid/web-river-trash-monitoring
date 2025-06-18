@@ -1,241 +1,106 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-import { StreamingLink, TrafficData } from "./interface";
+import { TrafficData } from "./interface";
 
-
+// === Konfigurasi Axios dengan baseURL dari .env ===
 const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Fungsi untuk memicu penyimpanan data traffic secara manual
-export const saveTrafficDataManually = async (billboard_name: string) => {
+// Fungsi untuk memicu penyimpanan data traffic secara manual (tanpa billboard_name)
+export const saveTrafficDataManually = async (): Promise<any> => {
   try {
-    const response = await axios.post(`/traffic/manual-save`, {
-      billboard_name,
-    });
+    const response = await api.post(`/traffic/manual-save`);
     return response.data;
-  } catch (error) {
-    console.error("Failed to save traffic data manually:", error);
+  } catch (error: unknown) {
+    const err = error as any;
+    console.error("Failed to save traffic data manually:", err?.message || err);
     throw error;
   }
 };
 
-// Function to save traffic data to the backend
+// Fungsi untuk menyimpan data traffic ke backend
 export const saveTrafficData = async (data: TrafficData): Promise<any> => {
   try {
     const response = await api.post("/traffic", data);
     return response.data;
-  } catch (error) {
-    console.error("Error saving traffic data:", error);
+  } catch (error: unknown) {
+    const err = error as any;
+    console.error("Error saving traffic data:", err?.message || err);
     throw error;
   }
 };
 
-// Function to get traffic data by billboard
-export const getTrafficByBillboard = async (
-  billboard: string,
-  _limit: number = 100
-): Promise<any> => {
+// Fungsi untuk mengambil semua data traffic
+export const getTrafficAll = async (_limit: number = 100): Promise<any> => {
   try {
-    const response = await api.get(`/traffic/billboard/${billboard}`);
+    const response = await api.get(`/traffic/waste`);
     return response.data;
-  } catch (error) {
-    console.error(
-      `Error getting traffic data for billboard ${billboard}:`,
-      error
-    );
+  } catch (error: unknown) {
+    const err = error as any;
+    console.error("Error getting traffic data waste:", err?.message || err);
     throw error;
   }
 };
 
-// Function to get traffic data by date range
+// Fungsi untuk mengambil data traffic berdasarkan rentang tanggal
 export const getTrafficByDateRange = async (
   startDate: string,
   endDate: string,
-  billboard?: string
 ): Promise<any> => {
   try {
-    let url = `/traffic/daterange?startDate=${startDate}&endDate=${endDate}`;
-    if (billboard) {
-      url += `&billboard=${billboard}`;
-    }
+    const url = `/traffic/daterange?startDate=${startDate}&endDate=${endDate}`;
     const response = await api.get(url);
     return response.data;
-  } catch (error) {
-    console.error("Error getting traffic data by date range:", error);
+  } catch (error: unknown) {
+    const err = error as any;
+    console.error("Error getting traffic data by date range:", err?.message || err);
     throw error;
   }
 };
 
-// Function to get latest data for all billboards by using date range for today
+// Fungsi untuk mengambil data traffic terbaru (berdasarkan tanggal hari ini)
 export const getLatestTrafficData = async (): Promise<any> => {
   try {
-    // Use today's date for start and end to get the most recent data
     const today = new Date();
     const startDate = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-    const endDate = today.toISOString().split("T")[0];
+    const endDate = startDate;
 
-    // Get data for today without specifying billboard to get all
     const response = await getTrafficByDateRange(startDate, endDate);
 
-    // If successful, format the response to match expected structure
     return {
       success: true,
-      data: response.data || [],
+      data: response?.data ?? [],
     };
-  } catch (error) {
-    console.error("Error getting latest traffic data:", error);
+  } catch (error: unknown) {
+    const err = error as any;
+    console.error("Error getting latest traffic data:", err?.message || err);
     throw error;
   }
 };
 
-// Function to get latest data for a specific billboard
-export const getLatestBillboardData = async (
-  billboard: string
-): Promise<any> => {
-  try {
-    const response = await getTrafficByBillboard(billboard);
-
-    // Return the most recent entry if available
-    if (response.data && response.data.length > 0) {
-      return response.data[0]; // Assuming data is sorted by timestamp desc
-    }
-
-    return null;
-  } catch (error) {
-    console.error(
-      `Error getting latest data for billboard ${billboard}:`,
-      error
-    );
-    throw error;
-  }
-};
-
-// Function to export traffic data
+// Fungsi untuk mengekspor data traffic
 export const exportTrafficData = async (
   startDate: string,
   endDate: string,
   format: "csv" | "excel" | "json",
-  billboard?: string
 ): Promise<any> => {
   try {
-    let url = `/traffic/export?startDate=${startDate}&endDate=${endDate}&format=${format}`;
-    if (billboard) {
-      url += `&billboard=${billboard}`;
-    }
+    const url = `/traffic/export?startDate=${startDate}&endDate=${endDate}&format=${format}`;
 
     const response = await api.get(url, {
       responseType: format === "json" ? "json" : "blob",
     });
 
     return response.data;
-  } catch (error) {
-    console.error("Error exporting traffic data:", error);
-    throw error;
-  }
-};
-
-// Function to generate streaming link (tanpa parameter duration)
-export const generateStreamingLink = async (
-  billboard: string
-): Promise<string> => {
-  try {
-    const response = await api.post("/streaming", {
-      billboard_name: billboard,
-    });
-
-    if (response.data && response.data.success && response.data.data) {
-      return response.data.data.link;
-    }
-
-    throw new Error("Failed to generate streaming link");
-  } catch (error) {
-    console.error("Error generating streaming link:", error);
-    throw error;
-  }
-};
-
-// Function to get active streaming links for a billboard
-export const getActiveStreamingLinks = async (
-  billboard: string
-): Promise<StreamingLink[]> => {
-  try {
-    const response = await api.get(`/streaming/billboard/${billboard}`);
-
-    if (response.data && response.data.success && response.data.data) {
-      return Array.isArray(response.data.data)
-        ? response.data.data
-        : [response.data.data];
-    }
-
-    return [];
-  } catch (error) {
-    console.error("Error getting streaming links:", error);
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      // No active links found - not an error
-      return [];
-    }
-    throw error;
-  }
-};
-
-// Function to get a specific streaming link by ID
-export const getStreamingLinkById = async (
-  linkId: string
-): Promise<StreamingLink | null> => {
-  try {
-    const response = await api.get(`/streaming/validate/${linkId}`);
-
-    if (response.data && response.data.success && response.data.data) {
-      return response.data.data;
-    }
-
-    return null;
-  } catch (error) {
-    console.error("Error getting streaming link:", error);
-    return null;
-  }
-};
-
-// Function to delete a streaming link
-export const deleteStreamingLink = async (id: number): Promise<boolean> => {
-  try {
-    const response = await api.delete(`/streaming/${id}`);
-    return response.data && response.data.success;
-  } catch (error) {
-    console.error("Error deleting streaming link:", error);
-    throw error;
-  }
-};
-
-// Function to get active streaming link by billboard
-export const getActiveStreamingLinkByBillboard = async (
-  billboard: string
-): Promise<any> => {
-  try {
-    const response = await api.get(`/streaming/billboard/${billboard}`);
-    return response.data;
-  } catch (error) {
-    console.error(
-      `Error getting active streaming link for billboard ${billboard}:`,
-      error
-    );
-    throw error;
-  }
-};
-
-// Function to validate a streaming link
-export const validateStreamingLink = async (linkId: string): Promise<any> => {
-  try {
-    const response = await api.get(`/streaming/validate/${linkId}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error validating streaming link:", error);
+  } catch (error: unknown) {
+    const err = error as any;
+    console.error("Error exporting traffic data:", err?.message || err);
     throw error;
   }
 };

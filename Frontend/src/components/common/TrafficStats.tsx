@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import useMQTT from "../../hooks/useMqtt";
-import { TrafficStatsProps } from "../../services/interface";
 
-const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
+const TrafficStats: React.FC = () => {
   // Gunakan MQTT hook yang telah diperbaiki untuk mendapatkan data real-time
   const {
-    car_down,
-    car_up,
-    motorcycle_down,
-    motorcycle_up,
-    big_vehicle_down,
-    big_vehicle_up,
+    plastic_makro,
+    plastic_meso,
+    nonplastic_makro,
+    nonplastic_meso,
+    totalPlastic,
+    totalNonPlastic,
+    totalWastes,
     timeUntilReset,
-  } = useMQTT(billboardName);
+  } = useMQTT();
 
   // State untuk menangani pesan reset manual
   const [resetMessage] = useState<{
@@ -27,99 +27,47 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
     return `${minutes}m ${seconds}s`;
   };
 
-  // // Menangani pengiriman data manual
-  // const handleManualSubmit = async () => {
-  //   try {
-  //     setResetMessage(null);
-
-  //     const success = await resetData();
-
-  //     if (success) {
-  //       setResetMessage({
-  //         type: "success",
-  //         text: "Data berhasil disimpan ke database.",
-  //       });
-  //     } else {
-  //       setResetMessage({
-  //         type: "error",
-  //         text: "Gagal menyimpan data. Silakan coba lagi.",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error saat simpan manual:", error);
-  //     setResetMessage({
-  //       type: "error",
-  //       text: "Terjadi error saat mengirim data.",
-  //     });
-  //   }
-
-  //   // Hapus pesan setelah 5 detik
-  //   setTimeout(() => {
-  //     setResetMessage(null);
-  //   }, 5000);
-  // };
-
-  // Hitung total kendaraan
-  const totalDown = car_down + motorcycle_down + big_vehicle_down;
-  const totalUp = car_up + motorcycle_up + big_vehicle_up;
-  const totalVehicles = totalDown + totalUp;
-
-  // Hitung persentase (hindari pembagian dengan nol)
-  const percentUp = totalVehicles > 0 ? (totalUp / totalVehicles) * 100 : 0;
-  const percentDown = totalVehicles > 0 ? (totalDown / totalVehicles) * 100 : 0;
-
-  // Data untuk grafik jenis kendaraan
-  const vehicleTypes = [
-    { type: "Cars", value: car_down + car_up, color: "bg-blue-500" },
-    {
-      type: "Motorcycles",
-      value: motorcycle_down + motorcycle_up,
-      color: "bg-green-500",
-    },
-    {
-      type: "Big Vehicles",
-      value: big_vehicle_down + big_vehicle_up,
-      color: "bg-yellow-500",
-    },
-  ];
-
-  // Urutkan berdasarkan jumlah tertinggi
-  vehicleTypes.sort((a, b) => b.value - a.value);
-
   // Data statistik untuk ditampilkan di grid
   const stats = [
-    { label: "Car Down", value: car_down, color: "bg-blue-500" },
-    { label: "Car Up", value: car_up, color: "bg-green-500" },
-    {
-      label: "Motorcycle Down",
-      value: motorcycle_down,
-      color: "bg-yellow-500",
+    { 
+      label: "Plastic Makro", 
+      value: plastic_makro, 
+      color: "bg-blue-500 hover:bg-blue-600",
+      icon: "🔵"
     },
-    { label: "Motorcycle Up", value: motorcycle_up, color: "bg-purple-500" },
-    {
-      label: "Big Vehicle Down",
-      value: big_vehicle_down,
-      color: "bg-red-500",
+    { 
+      label: "Plastic Meso", 
+      value: plastic_meso, 
+      color: "bg-cyan-500 hover:bg-cyan-600",
+      icon: "🔷"
     },
-    {
-      label: "Big Vehicle Up",
-      value: big_vehicle_up,
-      color: "bg-indigo-500",
+    { 
+      label: "Non Plastic Makro", 
+      value: nonplastic_makro, 
+      color: "bg-green-500 hover:bg-green-600",
+      icon: "🟢"
+    },
+    { 
+      label: "Non Plastic Meso", 
+      value: nonplastic_meso, 
+      color: "bg-emerald-500 hover:bg-emerald-600",
+      icon: "💚"
     },
   ];
 
   return (
-    <div>
-      <div className="mb-4">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-medium">
-            Statistik Trafik untuk Billboard {billboardName}
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
+            Statistik Sampah
           </h3>
           <div className="flex items-center gap-2">
-            <div className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium px-2.5 py-1 rounded flex items-center">
+            <div className="flex items-center px-3 py-2 text-xs font-medium text-blue-800 bg-blue-100 rounded-lg shadow-sm dark:bg-blue-900/30 dark:text-blue-300">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
+                className="w-4 h-4 mr-2"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -131,163 +79,125 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Pengiriman otomatis dalam: {formatTimeUntilReset()}
+              Reset otomatis dalam: {formatTimeUntilReset()}
             </div>
-            {/* <button
-              onClick={handleManualSubmit}
-              disabled={isResetting}
-              className={`flex items-center px-3 py-1 text-xs font-medium rounded ${
-                isResetting
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400"
-                  : "bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-              }`}
-            >
-              {isResetting ? (
-                <>
-                  <svg
-                    className="animate-spin mr-1 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Sedang Memproses...
-                </>
-              ) : (
-                <>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 mr-1"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
-                    />
-                  </svg>
-                  Simpan Data Sekarang
-                </>
-              )}
-            </button> */}
           </div>
         </div>
 
         {resetMessage && (
           <div
-            className={`mb-3 p-2 text-sm rounded-md ${
+            className={`mb-4 p-3 text-sm rounded-lg shadow-sm ${
               resetMessage.type === "success"
-                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800"
+                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800"
             }`}
           >
             {resetMessage.text}
           </div>
         )}
 
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-          Data diterima secara real-time dari kamera dan disimpan ke database
-          setiap jam.
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Data diterima secara real-time dari kamera dan disimpan ke database setiap jam.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div className="bg-gray-100 dark:bg-slate-700 rounded-lg p-4 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Total Kendaraan Terdeteksi
-          </p>
-          <p className="text-2xl font-bold text-gray-800 dark:text-white">
-            {totalVehicles}
-          </p>
-
-          <div className="mt-2">
-            <div className="w-full bg-gray-200 dark:bg-slate-600 rounded-full h-2.5 mb-1">
-              <div className="flex">
-                <div
-                  className="bg-green-500 h-2.5 rounded-l-full"
-                  style={{ width: `${percentUp}%` }}
-                ></div>
-                <div
-                  className="bg-amber-500 h-2.5 rounded-r-full"
-                  style={{ width: `${percentDown}%` }}
-                ></div>
-              </div>
-            </div>
-            <div className="flex text-xs justify-between">
-              <span className="text-green-600 dark:text-green-400">
-                Naik: {totalUp} ({Math.round(percentUp)}%)
-              </span>
-              <span className="text-amber-600 dark:text-amber-400">
-                Turun: {totalDown} ({Math.round(percentDown)}%)
-              </span>
-            </div>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+        {/* Total Sampah */}
+        <div className="p-6 text-center text-white shadow-lg bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl">
+          <div className="flex items-center justify-center mb-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-8 h-8 mr-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
           </div>
+          <p className="mb-1 text-sm font-medium opacity-90">Total Sampah</p>
+          <p className="text-3xl font-bold">{totalWastes}</p>
+          <p className="mt-1 text-xs opacity-75">Keseluruhan Terdeteksi</p>
         </div>
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 col-span-2">
-          <p className="text-sm text-blue-800 dark:text-blue-300 mb-2">
-            Jenis Kendaraan
-          </p>
-          <div className="grid grid-cols-3 gap-3">
-            {vehicleTypes.map((item, index) => (
-              <div key={index} className="text-center">
-                <div className="mb-1">
-                  <div className="w-full bg-gray-200 dark:bg-slate-600 rounded-full h-2">
-                    <div
-                      className={`${item.color} h-2 rounded-full`}
-                      style={{
-                        width: `${
-                          totalVehicles > 0
-                            ? (item.value / totalVehicles) * 100
-                            : 0
-                        }%`,
-                      }}
-                    ></div>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-800 dark:text-gray-300">
-                  {item.type}
-                </p>
-                <p className="text-sm font-semibold">{item.value}</p>
-              </div>
-            ))}
+        {/* Total Plastic */}
+        <div className="p-6 text-center text-white shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
+          <div className="flex items-center justify-center mb-2">
+            <span className="text-2xl">♻️</span>
           </div>
+          <p className="mb-1 text-sm font-medium opacity-90">Total Plastik</p>
+          <p className="text-3xl font-bold">{totalPlastic}</p>
+          <p className="mt-1 text-xs opacity-75">Makro + Meso</p>
+        </div>
+
+        {/* Total Non-Plastic */}
+        <div className="p-6 text-center text-white shadow-lg bg-gradient-to-r from-green-500 to-green-600 rounded-xl">
+          <div className="flex items-center justify-center mb-2">
+            <span className="text-2xl">🌱</span>
+          </div>
+          <p className="mb-1 text-sm font-medium opacity-90">Total Non-Plastik</p>
+          <p className="text-3xl font-bold">{totalNonPlastic}</p>
+          <p className="mt-1 text-xs opacity-75">Makro + Meso</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className={`p-3 rounded-lg text-white text-center ${stat.color}`}
+      {/* Detail Stats Grid */}
+      <div className="p-6 bg-white shadow-lg dark:bg-slate-800 rounded-xl">
+        <h4 className="flex items-center mb-4 text-lg font-semibold text-gray-800 dark:text-white">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5 mr-2 text-blue-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <p className="text-sm font-medium mb-1">{stat.label}</p>
-            <p className="text-xl font-bold">{stat.value}</p>
-          </div>
-        ))}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+            />
+          </svg>
+          Detail Berdasarkan Kategori
+        </h4>
+        
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className={`${stat.color} p-4 rounded-lg text-white text-center shadow-md transform transition-all duration-200 hover:scale-105 cursor-pointer`}
+            >
+              <div className="mb-2 text-2xl">{stat.icon}</div>
+              <p className="mb-2 text-sm font-medium opacity-90">{stat.label}</p>
+              <p className="text-2xl font-bold">{stat.value}</p>
+              <div className="h-1 mt-2 rounded-full bg-white/20">
+                <div 
+                  className="h-1 transition-all duration-300 bg-white rounded-full" 
+                  style={{ 
+                    width: totalWastes > 0 ? `${(stat.value / totalWastes) * 100}%` : '0%' 
+                  }}
+                ></div>
+              </div>
+              <p className="mt-1 text-xs opacity-75">
+                {totalWastes > 0 ? `${((stat.value / totalWastes) * 100).toFixed(1)}%` : '0%'}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="mt-4 p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg text-sm text-gray-600 dark:text-gray-400">
+      {/* Info Panel */}
+      <div className="p-4 border border-gray-200 bg-gray-50 dark:bg-slate-700/50 rounded-xl dark:border-slate-600">
         <div className="flex items-start">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0"
+            className="flex-shrink-0 w-6 h-6 mr-3 text-blue-500 mt-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -299,12 +209,16 @@ const TrafficStats: React.FC<TrafficStatsProps> = ({ billboardName }) => {
               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span>
-            Data di atas adalah data real-time kumulatif dari kamera. Setiap
-            jam, sistem akan menghitung selisih data sejak terakhir disimpan dan
-            menyimpannya ke database. Big Vehicle adalah gabungan dari kendaraan
-            jenis truck dan bus.
-          </span>
+          <div className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="mb-2 font-medium">Informasi Data:</p>
+            <ul className="space-y-1 text-xs">
+              <li>• Data di atas adalah statistik real-time kumulatif dari sistem kamera</li>
+              <li>• Sistem menghitung selisih data setiap jam dan menyimpannya ke database</li>
+              <li>• <strong>Makro:</strong> Sampah berukuran besar yang mudah terdeteksi</li>
+              <li>• <strong>Meso:</strong> Sampah berukuran sedang hingga kecil</li>
+              <li>• Total plastik dan non-plastik dihitung otomatis dari makro + meso</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

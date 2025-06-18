@@ -1,28 +1,36 @@
 import { useEffect, useRef, useState } from "react";
 import mqtt from "mqtt";
 import { saveTrafficDataManually } from "../services/api";
-import { MQTTTrafficData } from "../services/interface";
 
-const MQTT_BROKER_URL = "ws://103.245.38.40:9001/mqtt";
-const TOPIC = "vehicle/interactions";
+const MQTT_BROKER_URL = import.meta.env.VITE_MQTT_BROKER_URL;
+const MQTT_TOPIC = import.meta.env.VITE_MQTT_TOPIC;
+
+if (!MQTT_BROKER_URL || !MQTT_TOPIC) {
+  throw new Error("MQTT_BROKER_URL or MQTT_TOPIC is not defined in .env");
+}
+
+// Simplified MQTT data structure - only the 4 counts
+interface MQTTTrafficData {
+  plastic_makro: number;
+  plastic_meso: number;
+  nonplastic_makro: number;
+  nonplastic_meso: number;
+}
 
 const useMQTT = (billboardName?: string) => {
   // Data MQTT yang diterima
   const [trafficData, setTrafficData] = useState<MQTTTrafficData>({
-    car_down: 0,
-    car_up: 0,
-    motorcycle_down: 0,
-    motorcycle_up: 0,
-    truck_down: 0,
-    truck_up: 0,
-    bus_down: 0,
-    bus_up: 0,
+    plastic_makro: 0,
+    plastic_meso: 0,
+    nonplastic_makro: 0,
+    nonplastic_meso: 0,
   });
 
   const [isResetting, setIsResetting] = useState<boolean>(false);
   const [timeUntilNextHour, setTimeUntilNextHour] = useState<number>(0);
 
   const mqttClientRef = useRef<mqtt.MqttClient | null>(null);
+
   // Fungsi untuk menghitung waktu sampai jam berikutnya
   const calculateTimeUntilNextHour = () => {
     const now = new Date();
@@ -55,7 +63,7 @@ const useMQTT = (billboardName?: string) => {
 
     try {
       // Panggil API untuk menyimpan data secara manual
-      const response = await saveTrafficDataManually(billboardName);
+      const response = await saveTrafficDataManually();
 
       return response.success;
     } catch (error) {
@@ -72,23 +80,37 @@ const useMQTT = (billboardName?: string) => {
     mqttClientRef.current = client;
 
     client.on("connect", () => {
-      console.log(
-        `Connected to MQTT broker for billboard ${billboardName || "all"}`
-      );
-      client.subscribe(TOPIC, (err) => {
-        if (!err) console.log(`Subscribed to ${TOPIC}`);
+      console.log(`Connected to MQTT broker for billboard ${billboardName || "all"}`);
+      client.subscribe(MQTT_TOPIC, (err) => {
+        if (!err) console.log(`Subscribed to ${MQTT_TOPIC}`);
       });
     });
 
     client.on("message", (topic, message) => {
-      if (topic === TOPIC) {
+      if (topic === MQTT_TOPIC) {
         try {
           const payload = JSON.parse(message.toString()) as MQTTTrafficData;
-          setTrafficData(payload);
+          
+          // Validate that we have the expected structure
+          if (
+            typeof payload.plastic_makro === 'number' &&
+            typeof payload.plastic_meso === 'number' &&
+            typeof payload.nonplastic_makro === 'number' &&
+            typeof payload.nonplastic_meso === 'number'
+          ) {
+            setTrafficData(payload);
+            console.log("MQTT Data received:", payload);
+          } else {
+            console.warn("Invalid MQTT payload structure:", payload);
+          }
         } catch (error) {
           console.error("Error parsing MQTT message:", error);
         }
       }
+    });
+
+    client.on("error", (error) => {
+      console.error("MQTT connection error:", error);
     });
 
     return () => {
@@ -97,24 +119,18 @@ const useMQTT = (billboardName?: string) => {
     };
   }, [billboardName]);
 
-  // Menghitung big vehicle dari data MQTT (untuk tampilan UI)
-  const big_vehicle_down = trafficData.truck_down + trafficData.bus_down;
-  const big_vehicle_up = trafficData.truck_up + trafficData.bus_up;
-
   return {
-    // Data kendaraan dari MQTT
-    car_down: trafficData.car_down,
-    car_up: trafficData.car_up,
-    motorcycle_down: trafficData.motorcycle_down,
-    motorcycle_up: trafficData.motorcycle_up,
-    truck_down: trafficData.truck_down,
-    truck_up: trafficData.truck_up,
-    bus_down: trafficData.bus_down,
-    bus_up: trafficData.bus_up,
+    // Data sampah dari MQTT (4 kategori)
+    plastic_makro: trafficData.plastic_makro,
+    plastic_meso: trafficData.plastic_meso,
+    nonplastic_makro: trafficData.nonplastic_makro,
+    nonplastic_meso: trafficData.nonplastic_meso,
 
-    // Big vehicle (gabungan truck dan bus) untuk UI
-    big_vehicle_down,
-    big_vehicle_up,
+    // Calculated totals (computed on frontend)
+    totalPlastic: trafficData.plastic_makro + trafficData.plastic_meso,
+    totalNonPlastic: trafficData.nonplastic_makro + trafficData.nonplastic_meso,
+    totalWastes: trafficData.plastic_makro + trafficData.plastic_meso + 
+                 trafficData.nonplastic_makro + trafficData.nonplastic_meso,
 
     // Timer dan status
     timeUntilReset: timeUntilNextHour, // Hanya untuk tampilan UI

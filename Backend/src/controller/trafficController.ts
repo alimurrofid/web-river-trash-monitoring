@@ -11,40 +11,18 @@ export const recordTraffic = async (req: Request, res: Response) => {
   try {
     const { 
       timestamp,
-      billboard_name,
-      motorcycle_down,
-      motorcycle_up,
-      car_down,
-      car_up,
-      big_vehicle_down,
-      big_vehicle_up
+      plastic_makro,
+      plastic_meso,
+      nonplastic_makro,
+      nonplastic_meso,
     } = req.body;
-    
-    // Validasi input
-    if (!billboard_name || !timestamp) {
-      return res.status(400).json({ 
-        success: false,
-        message: "Billboard name dan timestamp wajib diisi" 
-      });
-    }
-    
-    // Validasi billboard_name (A, B, atau C)
-    if (!["A", "B", "C"].includes(billboard_name)) {
-      return res.status(400).json({ 
-        success: false,
-        message: "Billboard name hanya boleh A, B, atau C" 
-      });
-    }
     
     const trafficData = {
       timestamp: new Date(timestamp),
-      billboard_name,
-      motorcycle_down: motorcycle_down || 0,
-      motorcycle_up: motorcycle_up || 0,
-      car_down: car_down || 0,
-      car_up: car_up || 0,
-      big_vehicle_down: big_vehicle_down || 0,
-      big_vehicle_up: big_vehicle_up || 0
+      plastic_makro: plastic_makro || 0,
+      plastic_meso: plastic_meso || 0,
+      nonplastic_makro: nonplastic_makro || 0,
+      nonplastic_meso: nonplastic_meso || 0,
     };
     
     const trafficId = await trafficRepository.recordTraffic(trafficData);
@@ -66,26 +44,8 @@ export const recordTraffic = async (req: Request, res: Response) => {
 
 export const manualSaveTraffic = async (req: Request, res: Response) => {
   try {
-    const { billboard_name } = req.body;
-
-    // Validasi input
-    if (!billboard_name) {
-      return res.status(400).json({
-        success: false,
-        message: "Billboard name wajib diisi",
-      });
-    }
-
-    // Validasi billboard_name (A, B, atau C)
-    if (!["A", "B", "C"].includes(billboard_name)) {
-      return res.status(400).json({
-        success: false,
-        message: "Billboard name hanya boleh A, B, atau C",
-      });
-    }
-
     // Trigger manual save dari service
-    const trafficId = await trafficService.manualSave(billboard_name);
+    const trafficId = await trafficService.manualSave();
 
     if (!trafficId) {
       return res.status(200).json({
@@ -107,32 +67,23 @@ export const manualSaveTraffic = async (req: Request, res: Response) => {
     });
   }
 };
+
 /**
- * Mendapatkan data traffic berdasarkan billboard
+ * Mendapatkan data traffic
  */
-export const getTrafficByBillboard = async (req: Request, res: Response) => {
+export const getTrafficAll = async (req: Request, res: Response) => {
   try {
-    const { billboard } = req.params;
     const limit = parseInt(req.query.limit as string) || 100;
     
-    // Validasi billboard
-    if (!["A", "B", "C"].includes(billboard)) {
-      return res.status(400).json({ 
-        success: false,
-        message: "Billboard hanya boleh A, B, atau C" 
-      });
-    }
-    
-    const trafficData = await trafficRepository.getTrafficByBillboard(billboard, limit);
+    const trafficData = await trafficRepository.getTrafficAll(limit);
     
     return res.status(200).json({
       success: true,
-      billboard,
       data: trafficData
     });
     
   } catch (error) {
-    console.error("Get traffic by billboard error:", error);
+    console.error("Get traffic All error:", error);
     return res.status(500).json({ 
       success: false,
       message: "Terjadi kesalahan pada server" 
@@ -145,7 +96,7 @@ export const getTrafficByBillboard = async (req: Request, res: Response) => {
  */
 export const getTrafficByDateRange = async (req: Request, res: Response) => {
   try {
-    const { startDate, endDate, billboard } = req.query;
+    const { startDate, endDate } = req.query;
     
     // Validasi input
     if (!startDate || !endDate) {
@@ -155,25 +106,15 @@ export const getTrafficByDateRange = async (req: Request, res: Response) => {
       });
     }
     
-    // Validasi billboard jika ada
-    if (billboard && !["A", "B", "C"].includes(billboard as string)) {
-      return res.status(400).json({ 
-        success: false,
-        message: "Billboard hanya boleh A, B, atau C" 
-      });
-    }
-    
     const trafficData = await trafficRepository.getTrafficByDateRange(
       new Date(startDate as string),
-      new Date(endDate as string),
-      billboard as string
+      new Date(endDate as string)
     );
     
     return res.status(200).json({
       success: true,
       startDate,
       endDate,
-      billboard: billboard || "All",
       data: trafficData
     });
     
@@ -191,7 +132,7 @@ export const getTrafficByDateRange = async (req: Request, res: Response) => {
  */
 export const getDashboardData = async (req: Request, res: Response) => {
   try {
-    const { groupBy, billboard } = req.query;
+    const { groupBy } = req.query;
     
     // Validasi groupBy
     if (!groupBy || !["hour", "day", "week", "month"].includes(groupBy as string)) {
@@ -201,26 +142,16 @@ export const getDashboardData = async (req: Request, res: Response) => {
       });
     }
     
-    // Validasi billboard jika ada
-    if (billboard && !["A", "B", "C"].includes(billboard as string)) {
-      return res.status(400).json({ 
-        success: false,
-        message: "Billboard hanya boleh A, B, atau C" 
-      });
-    }
-    
     const aggregatedData = await trafficRepository.getAggregatedTrafficData(
-      groupBy as "hour" | "day" | "week" | "month",
-      billboard as string
+      groupBy as "hour" | "day" | "week" | "month"
     );
     
     // Ambil juga total statistik
-    const statistics = await trafficRepository.getTrafficStatistics(billboard as string);
+    const statistics = await trafficRepository.getTrafficStatistics();
     
     return res.status(200).json({
       success: true,
       groupBy,
-      billboard: billboard || "All",
       data: aggregatedData,
       statistics
     });
@@ -239,7 +170,7 @@ export const getDashboardData = async (req: Request, res: Response) => {
  */
 export const exportTrafficData = async (req: Request, res: Response) => {
   try {
-    const { startDate, endDate, billboard, format } = req.query;
+    const { startDate, endDate, format } = req.query;
     
     // Validasi input
     if (!startDate || !endDate) {
@@ -260,8 +191,7 @@ export const exportTrafficData = async (req: Request, res: Response) => {
     // Ambil data traffic
     const trafficData = await trafficRepository.getTrafficByDateRange(
       new Date(startDate as string),
-      new Date(endDate as string),
-      billboard as string
+      new Date(endDate as string)
     );
     
     // Jika format JSON, langsung return data
@@ -270,14 +200,13 @@ export const exportTrafficData = async (req: Request, res: Response) => {
         success: true,
         startDate,
         endDate,
-        billboard: billboard || "All",
         data: trafficData
       });
     }
     
     // Jika format CSV
     if (format === "csv") {
-      const fileName = `traffic_data_${billboard || 'all'}_${startDate}_${endDate}.csv`;
+      const fileName = `traffic_data_waste'_${startDate}_${endDate}.csv`;
       
       res.setHeader("Content-Type", "text/csv");
       res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
@@ -290,13 +219,13 @@ export const exportTrafficData = async (req: Request, res: Response) => {
     
     // Jika format Excel
     if (format === "excel") {
-      const fileName = `traffic_data_${billboard || 'all'}_${startDate}_${endDate}.xlsx`;
+      const fileName = `traffic_data_waste_${startDate}_${endDate}.xlsx`;
       
       res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
       res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
       
       // Generate Excel file
-      const excelBuffer = await generateExcelFile(trafficData, billboard as string);
+      const excelBuffer = await generateExcelFile(trafficData);
       
       return res.status(200).send(excelBuffer);
     }
@@ -311,7 +240,7 @@ export const exportTrafficData = async (req: Request, res: Response) => {
 };
 
 /**
- * Mendapatkan data traffic terbaru untuk semua billboard
+ * Mendapatkan data traffic terbaru
  */
 export const getLatestTrafficData = async (req: Request, res: Response) => {
   try {

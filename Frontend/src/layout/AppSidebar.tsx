@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router";
 // Assume these icons are imported from an icon library
 import { useSidebar } from "../context/SidebarContext";
 import {
-  BoxCubeIcon,
+  // BoxCubeIcon,
   // CalenderIcon,
   ChevronDownIcon,
   GridIcon,
@@ -23,24 +23,12 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    // subItems: [{ name: "Ecommerce", path: "/", pro: false }],
     path: "/dashboard",
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "Billboard",
-    path: "/billboards",
   },
   {
     name: "Laporan",
     icon: <TableIcon />,
-    // subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
     path: "/basic-tables",
-  },
-  {
-    icon: <TableIcon />,
-    name: "Manajemen Link",
-    path: "/active-links",
   },
 ];
 
@@ -227,9 +215,7 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-        }`}
+        className={`py-8 flex justify-center`}
       >
         <Link to="/">
           {isExpanded || isHovered || isMobileOpen ? (
@@ -238,23 +224,23 @@ const AppSidebar: React.FC = () => {
                 className="dark:hidden"
                 src="/images/logo/logoskripsi.svg"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={70}
+                height={70}
               />
               <img
                 className="hidden dark:block"
                 src="/images/logo/logoskripsi.svg"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={70}
+                height={70}
               />
             </>
           ) : (
             <img
               src="/images/logo/logoskripsi.svg"
               alt="Logo"
-              width={150}
-              height={40}
+              width={70}
+              height={70}
             />
           )}
         </Link>

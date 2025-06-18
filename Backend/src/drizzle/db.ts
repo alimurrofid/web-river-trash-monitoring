@@ -7,10 +7,10 @@ import "dotenv/config";
 async function createDbConnection() {
   try {
     const connection = await mysql.createConnection({
-      host: "localhost", // Hardcode localhost dulu
-      user: "root", // Hardcode user dulu
-      password: "", // Kosong jika tidak ada password
-      database: "skripsi",
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
     });
     console.log("Database connection successful!");
     return connection;

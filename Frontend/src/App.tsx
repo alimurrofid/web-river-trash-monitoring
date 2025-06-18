@@ -3,7 +3,7 @@ import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
 import UserProfiles from "./pages/UserProfiles";
-import Videos from "./pages/UiElements/Videos";
+// import Videos from "./pages/UiElements/Videos";
 import Images from "./pages/UiElements/Images";
 import Alerts from "./pages/UiElements/Alerts";
 import Badges from "./pages/UiElements/Badges";
@@ -18,10 +18,10 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-import StreamingPage from "./pages/UiElements/Stream";
-import BillboardCards from "./components/ui/card/Billboardcard";
+// import StreamingPage from "./pages/UiElements/Stream";
+// import BillboardCards from "./components/ui/card/Billboardcard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import ActiveLinks from "./pages/ReportLink/Report-link";
+// import ActiveLinks from "./pages/ReportLink/Report-link";
 
 export default function App() {
   return (
@@ -30,7 +30,7 @@ export default function App() {
         <ScrollToTop />
         <Routes>
           <Route index path="/" element={<SignIn />} />
-          <Route path="/stream/:linkId" element={<StreamingPage />} />
+          {/* <Route path="/stream/:linkId" element={<StreamingPage />} /> */}
           {/* Dashboard Layout */}
           <Route
             element={
@@ -58,9 +58,9 @@ export default function App() {
             <Route path="/badge" element={<Badges />} />
             <Route path="/buttons" element={<Buttons />} />
             <Route path="/images" element={<Images />} />
-            <Route path="/billboards" element={<BillboardCards />} />
-            <Route path="/videos" element={<Videos />} />
-            <Route path="/active-links" element={<ActiveLinks />} />
+            {/* <Route path="/billboards" element={<BillboardCards />} /> */}
+            {/* <Route path="/videos" element={<Videos />} /> */}
+            {/* <Route path="/active-links" element={<ActiveLinks />} /> */}
 
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />

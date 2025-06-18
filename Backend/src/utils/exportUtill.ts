@@ -42,9 +42,9 @@ export function generateCsvFile(data: any[]): string {
 /**
  * Generate Excel file from traffic data
  */
-export async function generateExcelFile(data: any[], billboardName?: string): Promise<Buffer> {
+export async function generateExcelFile(data: any[]): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet(billboardName ? `Billboard ${billboardName}` : 'All Billboards');
+  const worksheet = workbook.addWorksheet();
   
   if (data.length === 0) {
     worksheet.addRow(['No data available']);
@@ -62,7 +62,7 @@ export async function generateExcelFile(data: any[], billboardName?: string): Pr
   worksheet.getRow(1).fill = {
     type: 'pattern',
     pattern: 'solid',
-    fgColor: { argb: 'FFD3D3D3' } // Light gray
+    fgColor: { argb: 'FFD3D3D3' }
   };
   
   // Tambahkan data rows
@@ -94,7 +94,7 @@ export async function generateExcelFile(data: any[], billboardName?: string): Pr
   
   // Hitung total untuk setiap kolom angka
   headers.forEach((header, index) => {
-    if (['motorcycle_down', 'motorcycle_up', 'car_down', 'car_up', 'big_vehicle_down', 'big_vehicle_up'].includes(header)) {
+    if (['plastic_makro', 'plastic_meso', 'nonplastic_makro', 'nonplastic_meso'].includes(header)) {
       const columnTotal = data.reduce((sum, item) => sum + (item[header] || 0), 0);
       totalRow.getCell(index + 1).value = columnTotal;
       totalRow.getCell(index + 1).font = { bold: true };
@@ -104,33 +104,32 @@ export async function generateExcelFile(data: any[], billboardName?: string): Pr
   // Tambahkan summary
   worksheet.addRow([]);
   
-  const vehicleTypes = [
-    { name: 'Motorcycles', up: 'motorcycle_up', down: 'motorcycle_down' },
-    { name: 'Cars', up: 'car_up', down: 'car_down' },
-    { name: 'Big Vehicles', up: 'big_vehicle_up', down: 'big_vehicle_down' }
+  const WasteTypes = [
+    { name: 'Plastic', makro: 'plastic_makro', meso: 'plastic_meso' },
+    { name: 'Nonplastic', makro: 'nonplastic_makro', meso: 'nonplastic_meso' }
   ];
   
-  // Total per jenis kendaraan
-  vehicleTypes.forEach(type => {
-    const upIndex = headers.indexOf(type.up);
-    const downIndex = headers.indexOf(type.down);
+  // Total per jenis sampah
+  WasteTypes.forEach(type => {
+    const makroIndex = headers.indexOf(type.makro);
+    const mesoIndex = headers.indexOf(type.meso);
     
-    if (upIndex !== -1 && downIndex !== -1) {
-      const totalUp = data.reduce((sum, item) => sum + (item[type.up] || 0), 0);
-      const totalDown = data.reduce((sum, item) => sum + (item[type.down] || 0), 0);
-      const total = totalUp + totalDown;
+    if (makroIndex !== -1 && mesoIndex !== -1) {
+      const totalMakro = data.reduce((sum, item) => sum + (item[type.makro] || 0), 0);
+      const totalMeso = data.reduce((sum, item) => sum + (item[type.meso] || 0), 0);
+      const total = totalMakro + totalMeso;
       
       worksheet.addRow([`Total ${type.name}`, total]);
-      worksheet.addRow([`- Going Up`, totalUp]);
-      worksheet.addRow([`- Going Down`, totalDown]);
+      worksheet.addRow([`- Makro`, totalMakro]);
+      worksheet.addRow([`- Meso`, totalMeso]);
     }
   });
   
   // Grand total
   const grandTotal = data.reduce((sum, item) => {
     let rowTotal = 0;
-    vehicleTypes.forEach(type => {
-      rowTotal += (item[type.up] || 0) + (item[type.down] || 0);
+    WasteTypes.forEach(type => {
+      rowTotal += (item[type.makro] || 0) + (item[type.meso] || 0);
     });
     return sum + rowTotal;
   }, 0);
@@ -140,7 +139,7 @@ export async function generateExcelFile(data: any[], billboardName?: string): Pr
   grandTotalRow.fill = {
     type: 'pattern',
     pattern: 'solid',
-    fgColor: { argb: 'FFFFF2CC' } // Light yellow
+    fgColor: { argb: 'FFFFF2CC' }
   };
   
   // Return buffer

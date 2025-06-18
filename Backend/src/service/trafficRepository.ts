@@ -1,18 +1,15 @@
 // src/services/trafficRepository.ts
 import { eq, and, gte, lte, desc, sql, SQL, asc } from "drizzle-orm";
 import { db } from "../drizzle/db.js";
-import { trafficBillboard } from "../drizzle/schema.js";
+import { trafficWaste } from "../drizzle/schema.js";
 
 // Tipe data untuk input traffic recording
 export interface TrafficInput {
   timestamp: Date;
-  billboard_name: string;
-  motorcycle_down: number;
-  motorcycle_up: number;
-  car_down: number;
-  car_up: number;
-  big_vehicle_down: number;
-  big_vehicle_up: number;
+  plastic_makro: number;
+  plastic_meso: number;
+  nonplastic_makro: number;
+  nonplastic_meso: number;
 }
 
 /**
@@ -20,63 +17,51 @@ export interface TrafficInput {
  */
 export async function recordTraffic(data: TrafficInput) {
   // Insert data
-  await db.insert(trafficBillboard).values(data);
+  await db.insert(trafficWaste).values(data);
   
-  // Ambil data terakhir yang diinsert berdasarkan timestamp dan billboard_name
+  // Ambil data terakhir yang diinsert berdasarkan timestamp
   const lastInserted = await db.select()
-    .from(trafficBillboard)
+    .from(trafficWaste)
     .where(
-      and(
-        eq(trafficBillboard.billboard_name, data.billboard_name),
-        eq(trafficBillboard.timestamp, data.timestamp)
+        eq(trafficWaste.timestamp, data.timestamp)
       )
-    )
-    .orderBy(desc(trafficBillboard.created_at))
+    .orderBy(desc(trafficWaste.created_at))
     .limit(1);
   
   return lastInserted.length > 0 ? lastInserted[0].id : null;
 }
 
 /**
- * Mendapatkan data traffic berdasarkan billboard
+ * Mendapatkan data traffic
  */
-export async function getTrafficByBillboard(billboardName: string, limit: number = 100) {
+export async function getTrafficAll(limit: number = 100) {
   return await db.select()
-    .from(trafficBillboard)
-    .where(eq(trafficBillboard.billboard_name, billboardName))
-    .orderBy(desc(trafficBillboard.timestamp))
+    .from(trafficWaste)
+    .orderBy(desc(trafficWaste.timestamp))
     .limit(limit);
 }
 
 /**
- * Mendapatkan data traffic berdasarkan rentang tanggal dan billboard (opsional)
+ * Mendapatkan data traffic berdasarkan rentang tanggal
  */
 export async function getTrafficByDateRange(
   startDate: Date, 
   endDate: Date, 
-  billboardName?: string
 ) {
-  // Basic where condition
   const whereCondition = and(
-    gte(trafficBillboard.timestamp, startDate),
-    lte(trafficBillboard.timestamp, endDate)
+    gte(trafficWaste.timestamp, startDate),
+    lte(trafficWaste.timestamp, endDate)
   );
-  
-  // Jika billboard_name disediakan, tambahkan ke kondisi
-  const fullCondition = billboardName 
-    ? and(whereCondition, eq(trafficBillboard.billboard_name, billboardName))
-    : whereCondition;
-  
+
   return await db.select()
-    .from(trafficBillboard)
-    .where(fullCondition)
-    .orderBy(asc(trafficBillboard.timestamp))
+    .from(trafficWaste)
+    .where(whereCondition)
+    .orderBy(asc(trafficWaste.timestamp))
     .execute();
 }
 
 /**
  * Mendapatkan data agregat untuk dashboard berdasarkan pengelompokan waktu
- * dan billboard (opsional)
  */
 export async function getAggregatedTrafficData(
   groupBy: "hour" | "day" | "week" | "month",
@@ -86,102 +71,52 @@ export async function getAggregatedTrafficData(
   
   switch(groupBy) {
     case "hour":
-      timeFormat = sql`DATE_FORMAT(${trafficBillboard.timestamp}, '%Y-%m-%d %H:00')`;
+      timeFormat = sql`DATE_FORMAT(${trafficWaste.timestamp}, '%Y-%m-%d %H:00')`;
       break;
     case "day":
-      timeFormat = sql`DATE(${trafficBillboard.timestamp})`;
+      timeFormat = sql`DATE(${trafficWaste.timestamp})`;
       break;
     case "week":
-      timeFormat = sql`DATE_FORMAT(${trafficBillboard.timestamp}, '%Y-%u')`;
+      timeFormat = sql`DATE_FORMAT(${trafficWaste.timestamp}, '%Y-%u')`;
       break;
     case "month":
-      timeFormat = sql`DATE_FORMAT(${trafficBillboard.timestamp}, '%Y-%m')`;
+      timeFormat = sql`DATE_FORMAT(${trafficWaste.timestamp}, '%Y-%m')`;
       break;
     default:
-      timeFormat = sql`DATE(${trafficBillboard.timestamp})`;
+      timeFormat = sql`DATE(${trafficWaste.timestamp})`;
   }
   
-  // Buat select query dengan kondisi where jika billboard_name disediakan
-  const selectQuery = billboardName
-    ? db.select({
+  const selectQuery = db.select({
         time_period: timeFormat,
-        motorcycle_down: sql`SUM(${trafficBillboard.motorcycle_down})`,
-        motorcycle_up: sql`SUM(${trafficBillboard.motorcycle_up})`,
-        car_down: sql`SUM(${trafficBillboard.car_down})`,
-        car_up: sql`SUM(${trafficBillboard.car_up})`,
-        big_vehicle_down: sql`SUM(${trafficBillboard.big_vehicle_down})`,
-        big_vehicle_up: sql`SUM(${trafficBillboard.big_vehicle_up})`,
+        plastic_makro: sql`SUM(${trafficWaste.plastic_makro})`,
+        plastic_meso: sql`SUM(${trafficWaste.plastic_meso})`
       })
-      .from(trafficBillboard)
-      .where(eq(trafficBillboard.billboard_name, billboardName))
-    : db.select({
-        time_period: timeFormat,
-        motorcycle_down: sql`SUM(${trafficBillboard.motorcycle_down})`,
-        motorcycle_up: sql`SUM(${trafficBillboard.motorcycle_up})`,
-        car_down: sql`SUM(${trafficBillboard.car_down})`,
-        car_up: sql`SUM(${trafficBillboard.car_up})`,
-        big_vehicle_down: sql`SUM(${trafficBillboard.big_vehicle_down})`,
-        big_vehicle_up: sql`SUM(${trafficBillboard.big_vehicle_up})`,
-      })
-      .from(trafficBillboard);
+      .from(trafficWaste);
   
   return await selectQuery.groupBy(timeFormat).orderBy(asc(timeFormat));
 }
 
-/**
- * Mendapatkan statistik total kendaraan
- */
-export async function getTrafficStatistics(billboardName?: string) {
-  // Buat select query dengan kondisi where jika billboard_name disediakan
-  const selectQuery = billboardName
-    ? db.select({
-        total_motorcycle: sql`SUM(${trafficBillboard.motorcycle_down} + ${trafficBillboard.motorcycle_up})`,
-        total_car: sql`SUM(${trafficBillboard.car_down} + ${trafficBillboard.car_up})`,
-        total_big_vehicle: sql`SUM(${trafficBillboard.big_vehicle_down} + ${trafficBillboard.big_vehicle_up})`,
-        total_up: sql`SUM(${trafficBillboard.motorcycle_up} + ${trafficBillboard.car_up} + ${trafficBillboard.big_vehicle_up})`,
-        total_down: sql`SUM(${trafficBillboard.motorcycle_down} + ${trafficBillboard.car_down} + ${trafficBillboard.big_vehicle_down})`,
-        total_all: sql`SUM(${trafficBillboard.motorcycle_down} + ${trafficBillboard.motorcycle_up} + ${trafficBillboard.car_down} + ${trafficBillboard.car_up} + ${trafficBillboard.big_vehicle_down} + ${trafficBillboard.big_vehicle_up})`,
+export async function getTrafficStatistics() {
+  const selectQuery = db.select({
+        total_plastic: sql`SUM(${trafficWaste.plastic_makro} + ${trafficWaste.plastic_meso})`,
+        total_nonplastic: sql`SUM(${trafficWaste.nonplastic_makro} + ${trafficWaste.nonplastic_meso})`,
+        total_all: sql`SUM(${trafficWaste.plastic_makro} + ${trafficWaste.plastic_meso} + ${trafficWaste.nonplastic_makro} + ${trafficWaste.nonplastic_meso})`,
       })
-      .from(trafficBillboard)
-      .where(eq(trafficBillboard.billboard_name, billboardName))
-    : db.select({
-        total_motorcycle: sql`SUM(${trafficBillboard.motorcycle_down} + ${trafficBillboard.motorcycle_up})`,
-        total_car: sql`SUM(${trafficBillboard.car_down} + ${trafficBillboard.car_up})`,
-        total_big_vehicle: sql`SUM(${trafficBillboard.big_vehicle_down} + ${trafficBillboard.big_vehicle_up})`,
-        total_up: sql`SUM(${trafficBillboard.motorcycle_up} + ${trafficBillboard.car_up} + ${trafficBillboard.big_vehicle_up})`,
-        total_down: sql`SUM(${trafficBillboard.motorcycle_down} + ${trafficBillboard.car_down} + ${trafficBillboard.big_vehicle_down})`,
-        total_all: sql`SUM(${trafficBillboard.motorcycle_down} + ${trafficBillboard.motorcycle_up} + ${trafficBillboard.car_down} + ${trafficBillboard.car_up} + ${trafficBillboard.big_vehicle_down} + ${trafficBillboard.big_vehicle_up})`,
-      })
-      .from(trafficBillboard);
+      .from(trafficWaste);
   
   const result = await selectQuery.execute();
   return result[0];
 }
 
 /**
- * Mendapatkan data terbaru per billboard
+ * Mendapatkan data terbaru
  */
 export async function getLatestTrafficData() {
-  // Sub-query untuk mendapatkan timestamp terbaru untuk setiap billboard
-  const latestTimestampSubquery = db
-    .select({
-      billboard_name: trafficBillboard.billboard_name,
-      latest_timestamp: sql<string>`MAX(${trafficBillboard.timestamp})`,
-    })
-    .from(trafficBillboard)
-    .groupBy(trafficBillboard.billboard_name)
-    .as('latest_timestamps');
-
-  // Join dengan tabel utama untuk mendapatkan data lengkap
-  const result = await db
+  const latest = await db
     .select()
-    .from(trafficBillboard)
-    .where(
-      sql`(${trafficBillboard.billboard_name}, ${trafficBillboard.timestamp}) IN 
-          (SELECT latest_timestamps.billboard_name, latest_timestamps.latest_timestamp 
-           FROM ${latestTimestampSubquery})`
-    )
-    .execute();
+    .from(trafficWaste)
+    .orderBy(desc(trafficWaste.timestamp))
+    .limit(1);
 
-  return result;
+  return latest[0] ?? null;
 }

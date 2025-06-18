@@ -1,3 +1,15 @@
+# code editor settings
+/.idea
+/.vscode
+
+# dependencies
 /node_modules
-/src/drizzle/migrations
-/dist
+
+# dotenv environment variables file
+.env
+
+# build / generate output
+dist
+
+# drizzle migrations
+/src/drizzle/migrations/

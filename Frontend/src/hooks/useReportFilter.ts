@@ -1,22 +1,20 @@
 import { useState, useEffect } from "react";
 
-export interface VehicleReport {
+export interface WasteReport {
   id: number;
   tanggal: string;
-  bike_down: number;
-  bike_up: number;
-  car_down: number;
-  car_up: number;
-  van_down: number;
-  van_up: number;
+  plastic_makro: number;
+  plastic_meso: number;
+  nonplastic_makro: number;
+  nonplastic_meso: number;
 }
 
 interface UseReportFilterProps {
-  data: VehicleReport[];
+  data: WasteReport[];
 }
 
 interface UseReportFilterReturn {
-  filteredData: VehicleReport[];
+  filteredData: WasteReport[];
   isFilterActive: boolean;
   startDate: Date | null;
   endDate: Date | null;
@@ -33,7 +31,7 @@ export function useReportFilter({
 }: UseReportFilterProps): UseReportFilterReturn {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [filteredData, setFilteredData] = useState<VehicleReport[]>(data);
+  const [filteredData, setFilteredData] = useState<WasteReport[]>(data);
   const [isFilterActive, setIsFilterActive] = useState(false);
 
   // Proses filter data berdasarkan tanggal

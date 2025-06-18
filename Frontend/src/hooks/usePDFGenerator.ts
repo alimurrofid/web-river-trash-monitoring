@@ -1,10 +1,10 @@
 import {jsPDF} from 'jspdf';
 import "jspdf-autotable";
 import { format } from 'date-fns';
-import { VehicleReport } from './useReportFilter';
+import { WasteReport } from './useReportFilter';
 
 interface UsePdfGeneratorProps {
-  data: VehicleReport[];
+  data: WasteReport[];
   isFilterActive: boolean;
   startDate: Date | null;
   endDate: Date | null;
@@ -46,28 +46,24 @@ export function usePdfGenerator() {
       head: [
         [
           "Tanggal",
-          "Sepeda Motor Kebawah",
-          "Sepeda Motor Keatas",
-          "Mobil Kebawah",
-          "Mobil Keatas",
-          "Kendaraan Besar Kebawah",
-          "Kendaraan Besar Keatas",
+          "Plastic Makro",
+          "Plastic Meso",
+          "Non Plastic Makro",
+          "Non Plastic Meso",
         ],
       ],
       body: data.map((row) => [
         row.tanggal,
-        row.bike_down,
-        row.bike_up,
-        row.car_down,
-        row.car_up,
-        row.van_down,
-        row.van_up,
+        row.plastic_makro,
+        row.plastic_meso,
+        row.nonplastic_makro,
+        row.nonplastic_meso
       ]),
       styles: { fontSize: 8, cellPadding: 3 },
       headStyles: { fillColor: [66, 66, 66] },
     });
 
-    doc.save("laporan-kendaraan.pdf");
+    doc.save("laporan-sampah.pdf");
   };
 
   return { generatePdf };
