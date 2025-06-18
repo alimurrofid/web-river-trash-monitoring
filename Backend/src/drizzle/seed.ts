@@ -51,7 +51,7 @@ async function seedTrafficWaste() {
 // Jalankan keduanya
 async function seedAll() {
   await seedUsers();
-  await seedTrafficWaste();
+  // await seedTrafficWaste();
   process.exit(0);
 }
 
