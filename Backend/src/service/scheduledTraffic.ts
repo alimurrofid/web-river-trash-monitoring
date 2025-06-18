@@ -42,6 +42,7 @@ const MQTT_TOPIC = process.env.MQTT_TOPIC;
 if (!MQTT_BROKER_URL || !MQTT_TOPIC) {
   throw new Error("MQTT_BROKER_URL or MQTT_TOPIC is not defined in environment variables.");
 }
+
 // Koneksi ke MQTT broker
 const connectToMQTT = (): mqtt.MqttClient => {
   console.log("Connecting to MQTT broker...");
@@ -97,7 +98,7 @@ const calculateTotalDelta = async (): Promise<TotalDeltaData> => {
 
     return totalDelta;
   } catch (error) {
-    console.error("Error calculating total delta:", error);
+    console.error("❌ Error calculating total delta:", error);
     return {
       plastic_makro: 0,
       plastic_meso: 0,
@@ -110,7 +111,10 @@ const calculateTotalDelta = async (): Promise<TotalDeltaData> => {
 // Fungsi untuk menyimpan data ke database
 const saveTrafficData = async (): Promise<number | null> => {
   try {
-    if (!currentTrafficData) return null;
+    if (!currentTrafficData) {
+      console.log("⚠️ No current traffic data available");
+      return null;
+    }
 
     const totalDelta = await calculateTotalDelta();
 
@@ -122,7 +126,7 @@ const saveTrafficData = async (): Promise<number | null> => {
     };
 
     if (Object.values(newDelta).every(val => val <= 0)) {
-      console.log("No positive changes detected, skipping save.");
+      console.log("⏭️ No positive changes detected, skipping save.");
       return null;
     }
 
@@ -136,9 +140,15 @@ const saveTrafficData = async (): Promise<number | null> => {
 
     const trafficId = await trafficRepository.recordTraffic(trafficData);
 
-    console.log(`Saved traffic data ID: ${trafficId} at ${new Date().toISOString()}`);
-    console.log("Data:", trafficData);
+    if (trafficId === null || trafficId === undefined) {
+      console.error("❌ Failed to save traffic data");
+      return null;
+    }
 
+    // Log successful save with summary
+    console.log(`✅ Saved traffic data ID: ${trafficId} - P(M:${trafficData.plastic_makro}, m:${trafficData.plastic_meso}), NP(M:${trafficData.nonplastic_makro}, m:${trafficData.nonplastic_meso}) at ${new Date().toISOString()}`);
+
+    // Update total saved delta
     totalSavedDelta = {
       plastic_makro: totalDelta.plastic_makro + trafficData.plastic_makro,
       plastic_meso: totalDelta.plastic_meso + trafficData.plastic_meso,
@@ -148,7 +158,12 @@ const saveTrafficData = async (): Promise<number | null> => {
 
     return trafficId;
   } catch (error) {
-    console.error("Error saving traffic data:", error);
+    console.error("❌ Error saving traffic data:", error);
+    console.error("📝 Error details:", {
+      message: (error as Error).message,
+      stack: (error as Error).stack,
+      name: (error as Error).name
+    });
     return null;
   }
 };
@@ -156,24 +171,24 @@ const saveTrafficData = async (): Promise<number | null> => {
 // Load delta saat awal aplikasi jalan
 const loadTotalDeltaFromDatabase = async () => {
   try {
-    console.log("Loading total delta from DB...");
+    console.log("🚀 Loading total delta from database...");
     const totalDelta = await calculateTotalDelta();
     totalSavedDelta = totalDelta;
-    console.log("Total delta loaded:", totalDelta);
+    console.log("✅ Total delta loaded successfully");
   } catch (error) {
-    console.error("Error loading delta:", error);
+    console.error("❌ Error loading delta:", error);
   }
 };
 
 // Inisialisasi service
 export const initScheduledTrafficService = () => {
-  console.log("Initializing scheduled traffic service...");
+  console.log("🔧 Initializing scheduled traffic service...");
 
   connectToMQTT();
 
-  // Jadwalkan penyimpanan tiap jam (ubah ke '*/2 * * * *' untuk tiap 2 menit)
+  // Jadwalkan penyimpanan tiap 2 menit
   cron.schedule("*/2 * * * *", async () => {
-    console.log("Cron running at:", new Date().toISOString());
+    console.log("⏰ Cron job running at:", new Date().toISOString());
     await saveTrafficData();
   });
 
@@ -181,7 +196,7 @@ export const initScheduledTrafficService = () => {
 
   return {
     manualSave: async (): Promise<number | null> => {
-      console.log("Manual save triggered");
+      console.log("🔧 Manual save triggered");
       return await saveTrafficData();
     },
   };
