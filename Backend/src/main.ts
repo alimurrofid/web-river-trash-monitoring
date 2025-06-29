@@ -1,4 +1,4 @@
-
+// Backend/src/main.ts
 import express from "express";
 import session from "express-session";
 import cors from "cors";
@@ -12,38 +12,54 @@ import { initScheduledTrafficService } from "./service/scheduledTraffic.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(helmet());
+// Trust proxy untuk production dengan nginx
+app.set('trust proxy', 1);
 
-// CORS configuration
-// CORS configuration
+// Middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable untuk development
+}));
+
+// CORS configuration - HARUS sebelum session
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"],
   })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session middleware with memory store (for development only)
+// Session middleware dengan konfigurasi yang diperbaiki
 app.use(
   session({
-    name: "connect.sid", // Gunakan nama default
-    secret: process.env.SESSION_SECRET || "fallback-secret-key",
+    name: "connect.sid",
+    secret: process.env.SESSION_SECRET || "your-very-long-secret-key-for-production",
     resave: false,
     saveUninitialized: false,
+    rolling: true, // Refresh session on activity
     cookie: {
       secure: process.env.NODE_ENV === "production", // true untuk HTTPS
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 jam
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Penting untuk cross-origin
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: process.env.NODE_ENV === "production" ? ".pantausungaikita.id" : undefined,
     },
   })
 );
+
+// Debug middleware untuk session
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  console.log("Session ID:", req.sessionID);
+  console.log("Session:", req.session);
+  console.log("Cookies:", req.headers.cookie);
+  next();
+});
 
 // Initialize scheduled traffic service
 export const trafficService = initScheduledTrafficService();
@@ -74,6 +90,8 @@ app.use(errorHandler);
 // Start server
 const server = app.listen(PORT, () => {
   console.log(`Server berjalan di port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
 });
 
 // Handle graceful shutdown

@@ -1,4 +1,4 @@
-// src/controllers/authController.ts
+// Backend/src/controllers/authController.ts
 import { Request, Response } from "express";
 import * as userRepository from "../service/userRepository.js";
 
@@ -8,6 +8,11 @@ import * as userRepository from "../service/userRepository.js";
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+
+    console.log("=== LOGIN DEBUG ===");
+    console.log("Headers:", req.headers);
+    console.log("Session before login:", req.session);
+    console.log("Session ID before:", req.sessionID);
 
     // Validasi input
     if (!email || !password) {
@@ -42,6 +47,19 @@ export const login = async (req: Request, res: Response) => {
     req.session.userId = user.id;
     req.session.email = user.email;
 
+    // Force save session
+    req.session.save((err) => {
+      if (err) {
+        console.error("Session save error:", err);
+      } else {
+        console.log("Session saved successfully");
+      }
+    });
+
+    console.log("Session after login:", req.session);
+    console.log("Session ID after:", req.sessionID);
+    console.log("=== END LOGIN DEBUG ===");
+
     return res.status(200).json({
       success: true,
       message: "Login berhasil",
@@ -52,6 +70,51 @@ export const login = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Login error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Terjadi kesalahan pada server",
+    });
+  }
+};
+
+/**
+ * Get current user profile
+ */
+export const getProfile = async (req: Request, res: Response) => {
+  try {
+    console.log("=== PROFILE DEBUG ===");
+    console.log("Headers:", req.headers);
+    console.log("Session:", req.session);
+    console.log("Session ID:", req.sessionID);
+    console.log("User ID from session:", req.session.userId);
+    console.log("=== END PROFILE DEBUG ===");
+
+    if (!req.session.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Silakan login terlebih dahulu",
+      });
+    }
+
+    const user = await userRepository.findUserById(req.session.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User tidak ditemukan",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        created_at: user.created_at,
+      },
+    });
+  } catch (error) {
+    console.error("Get profile error:", error);
     return res.status(500).json({
       success: false,
       message: "Terjadi kesalahan pada server",
@@ -156,47 +219,14 @@ export const logout = (req: Request, res: Response) => {
 };
 
 /**
- * Get current user profile
- */
-export const getProfile = async (req: Request, res: Response) => {
-  try {
-    if (!req.session.userId) {
-      return res.status(401).json({
-        success: false,
-        message: "Tidak terautentikasi",
-      });
-    }
-
-    const user = await userRepository.findUserById(req.session.userId);
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User tidak ditemukan",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-        created_at: user.created_at,
-      },
-    });
-  } catch (error) {
-    console.error("Get profile error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan pada server",
-    });
-  }
-};
-
-/**
  * Check if user is authenticated
  */
 export const checkAuth = (req: Request, res: Response) => {
+  console.log("=== CHECK AUTH DEBUG ===");
+  console.log("Session:", req.session);
+  console.log("Session ID:", req.sessionID);
+  console.log("=== END CHECK AUTH DEBUG ===");
+
   if (req.session.userId) {
     return res.status(200).json({
       success: true,
