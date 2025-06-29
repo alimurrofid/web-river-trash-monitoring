@@ -16,10 +16,13 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet());
 
 // CORS configuration
+// CORS configuration
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -29,15 +32,15 @@ app.use(express.urlencoded({ extended: true }));
 // Session middleware with memory store (for development only)
 app.use(
   session({
-    name: "session_cookie_name",
-    secret: process.env.SESSION_SECRET || "your-secret-key",
-    // Store tidak ditentukan - akan menggunakan MemoryStore default
+    name: "connect.sid", // Gunakan nama default
+    secret: process.env.SESSION_SECRET || "fallback-secret-key",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production", // true untuk HTTPS
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000, // 24 jam
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Penting untuk cross-origin
     },
   })
 );

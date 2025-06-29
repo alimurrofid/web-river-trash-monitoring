@@ -12,7 +12,7 @@ const Dashboard: React.FC = () => {
     <>
       <PageMeta
         title="Rivermonitor | Dashboard"
-        description="Dashboard analitik untuk penghitungan kendaraan"
+        description="Dashboard analitik untuk penghitungan sampah"
       />
       <PageBreadcrumb pageTitle="Dashboard Analitik" />
 
